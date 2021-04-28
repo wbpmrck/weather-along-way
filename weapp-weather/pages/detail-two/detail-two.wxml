@@ -1,0 +1,52 @@
+<View>
+  <View class="weather-summary">
+    <View class="summary-item">
+      <View class="count fix-width-1">7个</View>
+      <View class="count fix-width-1">5个</View>
+    </View>
+    <View class="summary-item">
+      <View class="text fix-width-1">区域有不利天气</View>
+      <View class="text fix-width-1">天气预警</View>
+    </View>
+    <View class="summary-item">
+      <View class="distance fix-width-1">{{distanceDesc}}</View>
+      <view class="fix-width-1">
+        <button size="mini" class="bg-gradient custom-button " bindtap="navigateToDetailOne">
+          调用导航
+        </button>
+      </view>
+    </View>
+    <!-- <View>
+      <View class="count">7个</View>
+      <View class="text">区域有不利天气</View>
+      <View class="distance">1076公里</View>
+    </View>
+
+    <View>
+      <View class="count">5个</View>
+      <View class="text">天气预警</View>
+      <button size="mini" class="bg-gradient custom-button" bindtap="navigateToDetailOne">
+        调用导航
+      </button>
+    </View> -->
+  </View>
+  <map class="map" show-compass="{{true}}" show-scale="{{true}}" scale="{{scale}}" polyline="{{polyline}}" longitude="{{mapCenter.longitude}}" latitude="{{mapCenter.latitude}}" markers="{{markers}}" bindmarkertap="onMarkertap" bindcallouttap="onCallouttap"></map>
+  <View class="arrange">出发：{{startTimeDesc}} —— 到达：{{endTimeDesc}}</View>
+  <View class="weather-stat">
+    <View wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" wx:key="routeName" class="{{currentSelect===idx?'bg-gradient':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute">
+      <View class="title">{{route.weatherDesc}}</View>
+      <View class="duration">{{route.durationDesc}}</View>
+      <View>{{route.routeName}}</View>
+    </View>
+    <!-- <View class="{{currentSelect===1?'bg-gradient':''}} stat-item" data-idx="{{1}}" bind:tap="chooseRoute">
+      <View class="title">{{allRoutes[1].weatherDesc}}</View>
+      <View class="duration">{{allRoutes[1].durationDesc}}</View>
+      <View>收费多</View>
+    </View>
+    <View class="{{currentSelect===2?'bg-gradient':''}} stat-item" data-idx="{{2}}" bind:tap="chooseRoute">
+      <View class="title">{{allRoutes[2].weatherDesc}}</View>
+      <View class="duration">{{allRoutes[2].durationDesc}}</View>
+      <View>收费少 时间多</View>
+    </View> -->
+  </View>
+</View>

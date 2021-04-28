@@ -1,0 +1,22 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/calendar/calendar",
+    "pages/city/city",
+    "pages/detail-one/detail-one",
+    "pages/detail-two/detail-two"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "沿途天气",
+    "navigationBarTextStyle": "black"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序获取天气使用~"
+    }
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

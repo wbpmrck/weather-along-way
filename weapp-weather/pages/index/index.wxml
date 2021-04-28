@@ -1,0 +1,43 @@
+<!-- index.swan -->
+<view>
+  <!-- <map
+        class="map"
+        longitude="{{longitude}}"
+        latitude="{{latitude}}">
+    </map> -->
+  <view class="bg-gradient info">
+    <view>
+      <view class="input-label">目的地：</view>
+      <view class="input-value" bindtap="chooseStartingPlace" data-type="d">
+        <text wx-if="{{destination.province}}">{{destination.province }}省-</text>
+        <text wx-if="{{destination.city}}">{{destination.city}}市</text>
+        <text wx-if="{{destination.district}}">-{{destination.district}}区/县</text>
+      </view>
+    </view>
+    <view>
+      <view class="input-label">出发地：</view>
+      <view class="input-value" bindtap="chooseStartingPlace" data-type="s">
+        <text wx-if="{{startingPlace.province}}">{{startingPlace.province }}省-</text>
+        <text wx-if="{{startingPlace.city}}">{{startingPlace.city}}市</text>
+        <text wx-if="{{startingPlace.district}}">-{{startingPlace.district}}区/县</text>
+      </view>
+    </view>
+    <view>
+      <view class="input-label">出发时间：</view>
+      <picker  class="input-value" mode="date" value="{{date}}" start="{{startDate}}" end="{{endDate}}" bindchange="bindDateChange">
+        <view class="picker">
+         {{date}}
+        </view>
+      </picker>
+    </view>
+  </view>
+  <button class="bg-gradient custom-button" bindtap="navigateToDetailTwo">查看沿途天气</button>
+  <view class="search-log">
+    <view class="title">查询记录</view>
+    <view class="divider"></view>
+    <view class="list-item" s-for="item in list" bindtap="navigateToDetailTwo">
+      <view>{{item.from}} - {{item.to}}</view>
+      <view class="arrow-right bg-gradient"></view>
+    </view>
+  </view>
+</view>

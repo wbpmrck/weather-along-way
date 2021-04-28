@@ -1,0 +1,56 @@
+/* pages/city/city.wxss */
+page {
+  background-color: #efefef;
+}
+
+picker {
+  height: 30rpx;
+}
+
+.city {
+  margin: 16rpx 16rpx;
+  background-color: #fff;
+  padding-bottom: 24rpx;
+}
+
+.location {
+  padding: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.current-location {}
+
+.location .button {
+  margin: 0;
+}
+
+.hot-city-title,
+.city-list-title,
+.location-title {
+  padding: 24rpx;
+  background-color: #000;
+  color: #fff;
+}
+
+.hot-city-list {
+  padding: 16rpx;
+}
+
+.hot-city-item {
+  width: 25%;
+  display: inline-block;
+  text-align: center;
+}
+
+.hot-city-item-btn {
+  margin: 24rpx 0;
+  padding: 16rpx 0;
+  border-radius: 8rpx;
+  cursor: pointer;
+}
+
+.btn-bottom {
+  margin: 48rpx 0;
+}

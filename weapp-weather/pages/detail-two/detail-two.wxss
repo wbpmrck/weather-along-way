@@ -1,0 +1,70 @@
+.weather-summary {}
+
+.weather-summary .summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 10rpx;
+}
+
+.fix-width-1 {
+  width: 300rpx;
+  text-align: center;
+}
+
+.weather-summary .count {
+  font-weight: 600;
+  font-size: 48rpx;
+}
+
+.weather-summary .text {
+  /* margin: 32rpx 0; */
+}
+
+.weather-summary .distance {
+  font-size: 32rpx;
+}
+
+.custom-button {
+  border-radius: 48rpx;
+  margin: 0 0 0 0;
+  /* margin: 48rpx; */
+}
+
+.custom-button::after {
+  border: 0;
+}
+
+.map {
+  width: 100%;
+  height: 750rpx;
+}
+
+.arrange {
+  padding: 24rpx;
+  text-align: center;
+}
+
+.weather-stat {
+  display: flex;
+  justify-content: space-between;
+  margin: 10rpx 10rpx;
+  text-align: center;
+}
+
+.stat-item {
+  padding: 16rpx;
+  font-size: 32rpx;
+}
+
+.stat-item {
+  border-radius: 16rpx;
+}
+
+.stat-item .title {
+  font-weight: 600;
+}
+
+.stat-item .duration {
+  margin: 16rpx 0;
+}

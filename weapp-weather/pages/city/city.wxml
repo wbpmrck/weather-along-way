@@ -1,0 +1,23 @@
+<View class="city">
+  <View class="location-title">当前位置</View>
+  <View class="location">
+    <View class="current-location" bind:tap="finishChoosing">{{currentLocation}}</View>
+    <button type="primary" size="mini" class="button" bindtap="getLocation">重新定位</button>
+  </View>
+  <View class="hot-city-title">热门城市</View>
+  <View class="hot-city-list" bindtap="chooseCity">
+    <View class="hot-city-item" wx:for="{{hotCity}}" wx:for-index="idx" wx:for-item="city" wx:key="AREAID">
+      <View class="hot-city-item-btn" hover-class="bg-gradient" data-name="{{city.NAMECN}}" data-code="{{city.AREAID}}">
+        {{city.NAMECN}}
+      </View>
+    </View>
+  </View>
+  <View class="city-list-title">选择城市</View>
+  <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{range}}">
+    <view class="picker">
+      当前选择：{{chosenCity.province}}/{{chosenCity.city}}/{{chosenCity.district}}(区/县)
+    </view>
+  </picker>
+  <!-- <picker header-text="123" mode="region" value="{{choosedRegion}}" bindchange="bindRegionChange"></picker> -->
+  <button type="primary" class="btn-bottom" bindtap="finishChoosing">确定</button>
+</View>
