@@ -12,6 +12,8 @@ Page({
             city: '',
             district: '',
             code: '',
+            longitude: '', //可空
+            latitude: '', //可空
         },
         currentLocation: '',
         type: '',
@@ -21,9 +23,6 @@ Page({
         this.setData({type:options.type})
         this.setProvinceList()
         this.setChosenData();
-
-
-
         //TODO:判断缓存是否有当前位置，如果有，则直接获取并展示
 
         //如果没有，则调用定位接口：
@@ -131,8 +130,12 @@ Page({
 
                 if(resp && resp.statusCode === 200 && resp.data.status === 0){
                   this.setData({currentLocation: resp.data.result.addressComponent.city})
+
+                  let foundCity = findCityInfo(resp.data.result.addressComponent.city);
+                  foundCity.longitude = res.longitude;
+                  foundCity.latitude = res.latitude;
                   this.setData({
-                    chosenCity:findCityInfo(resp.data.result.addressComponent.city)
+                    chosenCity:foundCity
                   })
                   //TODO:更新本地缓存的位置信息
 

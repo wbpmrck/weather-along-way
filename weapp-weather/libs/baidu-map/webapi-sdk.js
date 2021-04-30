@@ -35,9 +35,21 @@ const DRIVING_ROUTE = {
     // ext_departure_time:"示例： ext_departure_time=1526527619"// [出发时间] 注意：该功能为高级付费服务，需通过反馈平台联系工作人员开通
   }
 };
+//地理信息编码 接口配置 ：参考：http://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-geocoding
+const GEO_CODING = {
+  url:`/geocoding/v3/`,
+  method:"GET",
+  params:{
+    address:"",//合肥市三里庵xx网吧
+    city:"", //合肥市
+    ret_coordtype:"gcj02",
+    output:"json",
+    // callback:"func1",//回调函数（目测是使用jsonp的时候可以用，未测试）
+  }
+};
 
 function fixedEncodeURIComponent(str) {
-  console.log(`fixedEncodeURIComponent:\n${str}`);
+  //console.log(`fixedEncodeURIComponent:\n${str}`);
   // return encodeURIComponent(str)
   return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
     return '%' + c.charCodeAt(0).toString(16);
@@ -45,20 +57,13 @@ function fixedEncodeURIComponent(str) {
 }
 
 function generateSn(url, data, sk) {
-  console.log('generateSn:');
-  // console.log(url);
-  // console.log(data);
-  // console.log(sk);
+  //console.log('generateSn:');
   const keys = qs.stringify(data, null, null, {
     encodeURIComponent: fixedEncodeURIComponent
   });
   // const keys = qs.stringify(data);
   // const keys ="output=json&coordtype=wgs84ll&location=31.8512,117.26061&ak=4gG4dWPdybn88j7yn2ezHwAE5pZgCtCq";
-  console.log('keys:');
-  console.log(keys);
   let newUrl = url + '?' + keys + sk;
-  console.log('newUrl:');
-  console.log(newUrl);
   // return md5(newUrl);
   return md5(fixedEncodeURIComponent(newUrl));
   // return md5(fixedEncodeURIComponent(url + '?' + keys + sk));
@@ -128,6 +133,7 @@ function callBaiduMapAPI(apiOption,inputData){
 module.exports = {
   callBaiduMapAPI,
   apis:{
+    GEO_CODING,
     REVERSE_GEOCODING,
     DRIVING_ROUTE
   }
