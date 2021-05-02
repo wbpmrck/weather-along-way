@@ -22,12 +22,13 @@
         <text wx-if="{{startingPlace.district}}">-{{startingPlace.district}}区/县</text>
       </view>
     </view>
-    <view>
+    <view class="bottom-divide">
       <view class="input-label">出发时间：</view>
-      <picker  class="input-value" mode="date" value="{{date}}" start="{{startDate}}" end="{{endDate}}" bindchange="bindDateChange">
-        <view class="picker">
-         {{date}}
-        </view>
+      <picker class="picker-date" mode="date" value="{{date}}" start="{{startDate}}" end="{{endDate}}" bindchange="bindDateChange">
+        <view class="picker">{{date}}</view>
+      </picker>
+      <picker class="picker-time" mode="time" value="{{time}}" start="{{startTime}}" bindchange="bindTimeChange">
+        <view class="picker">{{time}}</view>
       </picker>
     </view>
   </view>

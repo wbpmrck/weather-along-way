@@ -243,9 +243,11 @@ Page({
     async initAllRoutes(){
         // 查所有路线
         try{
-            let res1 = await this.queryRoute("4");
-            let res2 = await this.queryRoute("6");
-            let res3 = await this.queryRoute("7");
+            // let res1 = await this.queryRoute("4");
+            // let res2 = await this.queryRoute("6");
+            // let res3 = await this.queryRoute("7");
+
+            let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("3"),this.queryRoute("6")]);
 
             let r1 = this.genRouteData(res1);
             let r2 = this.genRouteData(res2);
