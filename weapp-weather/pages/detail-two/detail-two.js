@@ -65,6 +65,156 @@ Page({
         this.showRoute(idx);
     },
 
+    // TODO:完善路径的城市信息
+    fullfillRouteInfo:async function(){
+        //首先，每个路径的起始、终止点的城市信息，可以直接赋值为查询条件
+        //针对其他check点，调用接口进行逆地理位置编码，获取所属城市信息
+        //对城市进行去重复，按照起点--->终点 方向，保留第一次出现的城市的check point
+    },
+
+    /**
+     * 根据传入的路径信息，得到地图的绘制相关信息
+     * 1、本方法不采用百度地图返回的城市编码，而是采用总里程按照N公里等分法
+     * @param {*} routeData 
+     * @param {*} gutterDistance : 间隔多少公里进行城市采点
+     */
+    genRouteData2: function(routeData,gutterDistance){
+        const { distance, duration, steps,origin, destination, routes } = routeData;
+
+        console.log(`获取到路程时长:${duration}秒`)
+        console.log(`获取到路程:${distance}米`)
+
+        let newPath = []; //存放所有要绘制的图形信息
+        let markers =[]; // 存放所有的路过标记物
+        let passedAdcodes ={}; //保存经过的城市编码:城市名称
+        let cityMakers ={};//name:true 记录哪些城市已经标记过了
+
+        let distanceLeft = 0; //保存当前未参与checkPoint的里程数
+        const gutter = gutterDistance || 50; //默认50公里做一个城市check点
+
+        let beginCity =""; //保存起始城市
+
+        console.log(`step.length:${steps.length}`);
+        steps && steps.forEach((step, index) => {
+           let {path,start_location,distance} = step;
+
+           let points = path.split(";");
+           console.log(`points.length:${points.length}`);
+           let pointsCount = points.length;
+           let avgPointGutter = distance/pointsCount;
+
+           //逐个Path点积累里程数
+           points.forEach( (p,idx)=>{
+                distanceLeft += avgPointGutter;
+                //如果是第一个点，又或者当前总路径积累到的要check的程度,又或当前是最后一个路径点(最后的点固定加入marker)
+                if( markers.length===0 || (distanceLeft >= gutter * 1000) || (index === steps.length-1 && idx === points.length-1) ){
+                    // 开始新增marker
+                    // 将路径起始点加入marker
+                    let coord = p.split(',');
+                    let p_latitude = coord[1];
+                    let p_longitude = coord[0];
+                    let theMarker =  {
+                        markerId: this.data.markerIdSeed++,
+                        latitude: p_latitude,
+                        longitude:p_longitude,
+                        zIndex: 100,
+                        width:16,
+                        height:16,
+                        iconPath: '../../resource/image/marker.png',
+                        callout: {
+                            display: 'ALWAYS',
+                            content: `marker:${markers.length}`,
+                            color: '#000',
+                            fontSize: '14',
+                            borderRadius: 2,
+                            bgColor: '#5B9FFF',
+                            // padding: 1,
+                            textAlign: 'center'
+                        }
+                    };
+
+                    markers.push(theMarker);
+                    //由于新增的标记，更新剩余未使用的里程
+                    distanceLeft -= gutter * 1000; 
+                }
+            
+           });
+           
+           
+
+            
+            //如果该城市之前没有标识过，就标识一下
+            // if(!cityMakers[beginCity]){
+            //     markers.push(startMarker);
+            //     cityMakers[beginCity] = true;
+            // }
+
+
+           //处理path
+           let segmentPath = {
+               points:[],
+               width:3,
+               arrowLine:true,
+               color:"#2facff",
+           };
+           path.split(";").forEach(points =>{
+                points = points.split(",");
+                segmentPath.points.push({
+                    latitude: points[1], 
+                    longitude: points[0]
+                });
+           });
+
+           newPath.push(segmentPath);
+            
+        });
+
+
+
+
+        markers[0].callout.content+='(出发)';
+        markers[0].callout.color='#F00';
+        markers[0].callout.fontSize= '16';
+        markers[0].callout.borderRadius= 10;
+        markers[0].callout.bgColor= '#0F0';
+        markers[0].callout.padding= 2;
+        markers[0].callout.zIndex= 9999;
+
+        //最后一个终止点，样式修改
+        markers[markers.length-1].callout.content+='(到达)';
+        markers[markers.length-1].callout.color='#F00';
+        markers[markers.length-1].callout.fontSize= '16';
+        markers[markers.length-1].callout.borderRadius= 10;
+        markers[markers.length-1].callout.bgColor= '#0F0';
+        markers[markers.length-1].callout.padding= 2;
+        markers[markers.length-1].callout.zIndex= 9999;
+
+        //根据开始结束点，重设地图的中心点和缩放
+        let mapCenter = {
+            latitude: (parseFloat(markers[0].latitude) + parseFloat(markers[markers.length-1].latitude))/2,
+            longitude: (parseFloat(markers[0].longitude) + parseFloat(markers[markers.length-1].longitude))/2,
+          };
+
+        let scale = 8;//TODO:动态计算
+        let endTime = new Date(+this.data.startTime + (duration*1000));
+        
+        let routeMetaData = {
+            routeName:"",
+            weatherDesc:"天气不错/有预警天气/有不利天气",
+            distance,//距离（米）
+            distanceDesc:this.parseDistance(distance),
+            duration,//时长（秒）
+            durationDesc:this.parseDuration(duration),
+            endTime,
+            endTimeDesc:this.parseTime(endTime),
+            scale,
+            markers,
+            mapCenter,
+            polyline:newPath
+        }
+        return routeMetaData;
+    },
+
     //根据传入的导航路径数据，绘制地图信息
     genRouteData:function(routeData){
         const { distance, duration, steps,origin, destination, routes } = routeData;
@@ -249,9 +399,9 @@ Page({
 
             let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("3"),this.queryRoute("6")]);
 
-            let r1 = this.genRouteData(res1);
-            let r2 = this.genRouteData(res2);
-            let r3 = this.genRouteData(res3);
+            let r1 = this.genRouteData2(res1,100);
+            let r2 = this.genRouteData2(res2,100);
+            let r3 = this.genRouteData2(res3,100);
 
             //TODO:把路径按照时间快慢排序
             let ar = [r1,r2,r3];
