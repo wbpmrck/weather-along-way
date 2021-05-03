@@ -16,7 +16,7 @@ const REVERSE_GEOCODING = {
   method:"GET",
   params:{
     output:"json",
-    coordtype:"wgs84ll",
+    coordtype:"gcj02",
     location:"31.225696563611,121.49884033194" //lat,lng
   }
 };

@@ -1,6 +1,9 @@
 import { findCity } from "../../libs/baidu-map/adcode";
+import {cityData,findCityInfo} from '../city/city-data'
 import {callBaiduMapAPI,apis} from "../../libs/baidu-map/webapi-sdk"
 import moment from "../../libs/moment/moment-wrapper"
+import {removeDump,NOT_DEAL_ME} from "../../utils/array-util"
+import {kmForGutter} from "../../configs/index"
 Page({
   data: {
       //起始和结束地点信息
@@ -29,8 +32,8 @@ Page({
       polyline:[],
       //地图中心点经纬度
       mapCenter:{
-        latitude: 31.8512,
-        longitude: 117.26061,
+        latitude: undefined,
+        longitude: undefined,
       },
       markers: [],
       allRoutes:[],
@@ -66,10 +69,74 @@ Page({
     },
 
     // TODO:完善路径的城市信息
-    fullfillRouteInfo:async function(){
-        //首先，每个路径的起始、终止点的城市信息，可以直接赋值为查询条件
+    fullfillRouteInfo:async function(routeMetaData){
+
+        /*
+        routeMetaData = {
+            routeName:"",
+            weatherDesc:"天气不错/有预警天气/有不利天气",
+            distance,//距离（米）
+            distanceDesc:this.parseDistance(distance),
+            duration,//时长（秒）
+            durationDesc:this.parseDuration(duration),
+            endTime,
+            endTimeDesc:this.parseTime(endTime),
+            scale,
+            markers,
+            mapCenter,
+            polyline:newPath
+        }
+        */
+        //首先，每个路径的起始、终止点的城市信息，可以直接赋值为查询条件带来的城市信息
+
+        let markers = routeMetaData.markers;
+        markers[0].callout.content = this.data.from;
+        markers[markers.length-1].callout.content = this.data.to;
         //针对其他check点，调用接口进行逆地理位置编码，获取所属城市信息
+        let getCityQueue =[];
+        //TODO:调用百度地图服务进行地理位置逆解析，得到当前城市名称
+        try{
+            for(let i=1;i<markers.length-1;i++){
+                let m =markers[i];
+                getCityQueue.push(callBaiduMapAPI(apis.REVERSE_GEOCODING,{location:`${m.latitude},${m.longitude}`}))
+            }
+
+            let results = await Promise.all(getCityQueue);
+
+            //console.log('fullfillRouteInfo：');
+            //console.log(results);
+
+            results.forEach( (resp,idx)=>{
+                if(resp && resp.statusCode === 200 && resp.data.status === 0){
+                    let foundCity = findCityInfo(resp.data.result.addressComponent.city);
+                    markers[idx+1].callout.content =foundCity.city;
+                }
+            })
+          }catch(e){
+            console.error(e);
+          }
+          //console.log(`before remove dump:`);
+          //console.log(markers);
+          removeDump(routeMetaData.markers,(item,idx)=>{
+              //起点和终止点不参与去重，防止被删掉
+              if(idx === 0 || idx === routeMetaData.markers.length-1){
+                  return NOT_DEAL_ME;
+              }else{
+                return item.callout.content
+              }
+          });
+          //console.log(`after remove dump:`);
+          //console.log(markers);
+
         //对城市进行去重复，按照起点--->终点 方向，保留第一次出现的城市的check point
+        return routeMetaData
+    },
+
+    /**
+     * 获取路由中每个marker的天气信息，并对整体天气情况汇总数据进行分析统计
+     */
+    fullfillRouteWeatherInfo:async function(routeMetaData){
+
     },
 
     /**
@@ -99,7 +166,7 @@ Page({
            let {path,start_location,distance} = step;
 
            let points = path.split(";");
-           console.log(`points.length:${points.length}`);
+           //console.log(`points.length:${points.length}`);
            let pointsCount = points.length;
            let avgPointGutter = distance/pointsCount;
 
@@ -190,9 +257,15 @@ Page({
         markers[markers.length-1].callout.zIndex= 9999;
 
         //根据开始结束点，重设地图的中心点和缩放
-        let mapCenter = {
-            latitude: (parseFloat(markers[0].latitude) + parseFloat(markers[markers.length-1].latitude))/2,
-            longitude: (parseFloat(markers[0].longitude) + parseFloat(markers[markers.length-1].longitude))/2,
+        // let mapCenter = {
+        //     latitude: (parseFloat(markers[0].latitude) + parseFloat(markers[markers.length-1].latitude))/2,
+        //     longitude: (parseFloat(markers[0].longitude) + parseFloat(markers[markers.length-1].longitude))/2,
+        //   };
+
+
+          let mapCenter = {
+            latitude: markers[0].latitude,
+            longitude: markers[0].longitude
           };
 
         let scale = 8;//TODO:动态计算
@@ -319,9 +392,13 @@ Page({
         markers[markers.length-1].callout.zIndex= 9999;
 
         //根据开始结束点，重设地图的中心点和缩放
-        let mapCenter = {
-            latitude: (markers[0].latitude + markers[markers.length-1].latitude)/2,
-            longitude: (markers[0].longitude + markers[markers.length-1].longitude)/2,
+        // let mapCenter = {
+        //     latitude: (markers[0].latitude + markers[markers.length-1].latitude)/2,
+        //     longitude: (markers[0].longitude + markers[markers.length-1].longitude)/2,
+        //   };
+          let mapCenter = {
+            latitude: markers[0].latitude,
+            longitude: markers[0].longitude
           };
 
         let scale = 8;//TODO:动态计算
@@ -397,11 +474,14 @@ Page({
             // let res2 = await this.queryRoute("6");
             // let res3 = await this.queryRoute("7");
 
-            let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("3"),this.queryRoute("6")]);
+            let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("5"),this.queryRoute("6")]);
 
-            let r1 = this.genRouteData2(res1,100);
-            let r2 = this.genRouteData2(res2,100);
-            let r3 = this.genRouteData2(res3,100);
+            let rd1 = this.genRouteData2(res1,kmForGutter);
+            let rd2 = this.genRouteData2(res2,kmForGutter);
+            let rd3 = this.genRouteData2(res3,kmForGutter);
+
+
+            let [r1,r2,r3] = await Promise.all([this.fullfillRouteInfo(rd1),this.fullfillRouteInfo(rd2),this.fullfillRouteInfo(rd3)]);
 
             //TODO:把路径按照时间快慢排序
             let ar = [r1,r2,r3];
@@ -471,7 +551,6 @@ Page({
 
           //初始化路线信息
           await this.initAllRoutes();
-        // TODO:根据返回的路线获取其中城市节点信息，去重
         // TODO:根据经过的城市信息，查下天气网城市码点，查天气情况
         await this.initAllWeather();
       }catch(e){
