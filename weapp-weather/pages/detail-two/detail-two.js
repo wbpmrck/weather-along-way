@@ -1,9 +1,11 @@
 import { findCity } from "../../libs/baidu-map/adcode";
 import {cityData,findCityInfo} from '../city/city-data'
 import {callBaiduMapAPI,apis} from "../../libs/baidu-map/webapi-sdk"
+import {request} from "../../libs/wechat-helper/wx-request-helper"
 import moment from "../../libs/moment/moment-wrapper"
 import {removeDump,NOT_DEAL_ME} from "../../utils/array-util"
 import {kmForGutter} from "../../configs/index"
+import {callWeatherAPi,apis as weatherAPI,responseParser} from "../../libs/china-weather/sdk"
 Page({
   data: {
       //起始和结束地点信息
@@ -68,7 +70,7 @@ Page({
         this.showRoute(idx);
     },
 
-    // TODO:完善路径的城市信息
+    // 完善路径的城市信息
     fullfillRouteInfo:async function(routeMetaData){
 
         /*
@@ -91,10 +93,12 @@ Page({
 
         let markers = routeMetaData.markers;
         markers[0].callout.content = this.data.from;
+        markers[0].adcode = this.data.fromCode;
         markers[markers.length-1].callout.content = this.data.to;
+        markers[markers.length-1].adcode = this.data.toCode;
         //针对其他check点，调用接口进行逆地理位置编码，获取所属城市信息
         let getCityQueue =[];
-        //TODO:调用百度地图服务进行地理位置逆解析，得到当前城市名称
+        //调用百度地图服务进行地理位置逆解析，得到当前城市名称
         try{
             for(let i=1;i<markers.length-1;i++){
                 let m =markers[i];
@@ -108,8 +112,18 @@ Page({
 
             results.forEach( (resp,idx)=>{
                 if(resp && resp.statusCode === 200 && resp.data.status === 0){
-                    let foundCity = findCityInfo(resp.data.result.addressComponent.city);
-                    markers[idx+1].callout.content =foundCity.city;
+                    let foundCity = findCityInfo(resp.data.result.addressComponent.district);
+                    if(foundCity === undefined){
+                        console.log(`NOT found ${resp.data.result.addressComponent.district},use ${resp.data.result.addressComponent.city} instead!`);
+                        foundCity = findCityInfo(resp.data.result.addressComponent.city);
+                        markers[idx+1].callout.content =foundCity.city; //只找到城市，则显示城市
+                    }else{
+                        markers[idx+1].callout.content =foundCity.city+'-'+foundCity.district; //找到区县，则显示区县
+                    }
+                    markers[idx+1].adcode =foundCity.code;
+                    markers[idx+1].province =foundCity.province;
+                    markers[idx+1].city =foundCity.city;
+                    markers[idx+1].district =foundCity.district;
                 }
             })
           }catch(e){
@@ -137,6 +151,66 @@ Page({
      */
     fullfillRouteWeatherInfo:async function(routeMetaData){
 
+        /*
+        routeMetaData = {
+            routeName:"",
+            weatherDesc:"天气不错/有预警天气/有不利天气",
+            distance,//距离（米）
+            distanceDesc:this.parseDistance(distance),
+            duration,//时长（秒）
+            durationDesc:this.parseDuration(duration),
+            endTime,
+            endTimeDesc:this.parseTime(endTime),
+            scale,
+            markers:{
+                        markerId: this.data.markerIdSeed++,
+                        latitude: p_latitude,
+                        longitude:p_longitude,
+                        zIndex: 100,
+                        width:16,
+                        height:16,
+                        adcode:"122222",
+                        iconPath: '../../resource/image/marker.png',
+                        callout: {
+                            display: 'ALWAYS',
+                            content: `marker:${markers.length}`,
+                            color: '#000',
+                            fontSize: '14',
+                            borderRadius: 2,
+                            bgColor: '#5B9FFF',
+                            // padding: 1,
+                            textAlign: 'center'
+                        }
+                    },
+            mapCenter,
+            polyline:newPath
+        }
+        */
+        //    调用城市编码天气信息获取天气、预警信息
+        let getWeatherQueue = [];
+        let markers = routeMetaData.markers;
+        console.log(`has ${markers.length} markers`)
+        markers.forEach((marker,index)=>{
+            getWeatherQueue.push(callWeatherAPi(weatherAPI.EVERY_HOUR,{
+                area:marker.adcode
+            }))
+        });
+        let results = await Promise.all(getWeatherQueue);
+        results.forEach( (resp,idx)=>{
+            if(resp && resp.statusCode === 200 && resp.data){
+                console.log(resp);
+                let parsed = responseParser.parseCityInterface(resp.data);
+                console.log(parsed);
+                let marker = markers.filter(m=>m.adcode === parsed.adcode);
+                if(marker && marker.length > 0){
+                    marker[0].weather = parsed;
+                }else{
+                    console.error(`marker not exist for adcode:${parsed.adcode}`)
+                }
+
+            }
+        });
+        return routeMetaData;
     },
 
     /**
@@ -429,7 +503,7 @@ Page({
             let resp = await callBaiduMapAPI(apis.GEO_CODING,{
                 address
             })
-            console.log(resp);
+            // console.log(resp);
             let data = resp.data;
             if (data["status"] === 0) {
                 const res = data.result.location;
@@ -494,6 +568,13 @@ Page({
             ar[0].routeName = "时间少";
             ar[1].routeName = "收费多";
             ar[2].routeName = "收费少 时间多";
+
+            console.log('获取天气信息：')
+
+            //因为天气数据有本地接口缓存，所以不同路线分开调用并行请求更能利用缓存
+            ar[0] = await this.fullfillRouteWeatherInfo(ar[0]);
+            ar[1] = await this.fullfillRouteWeatherInfo(ar[1]);
+            ar[2] = await this.fullfillRouteWeatherInfo(ar[2]);
             console.log(ar[0]);
             console.log(ar[1]);
             console.log(ar[2]);

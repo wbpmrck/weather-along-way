@@ -3308,6 +3308,7 @@ function findCityInfo(name){
             let subCities = cities[cityName];
             for(let subCity in subCities){
                 if(subCity == name){
+                    // console.log(`found ${name} exactly in ${subCity}`);
                     //精确匹配
                     return {
                         province: provinceName,
@@ -3317,6 +3318,7 @@ function findCityInfo(name){
                     };
 
                 }else if(name.indexOf(subCity) === 0){
+                    // console.log(`found ${name}  in ${subCity}`);
                     return {
                         province: provinceName,
                         city: cityName,
@@ -3328,6 +3330,8 @@ function findCityInfo(name){
             }
         }
     }
+    
+    // console.log(`NOT found ${name}`);
 }
 
 module.exports = {

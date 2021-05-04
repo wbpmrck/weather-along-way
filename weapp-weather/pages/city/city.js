@@ -131,7 +131,10 @@ Page({
                 if(resp && resp.statusCode === 200 && resp.data.status === 0){
                   this.setData({currentLocation: resp.data.result.addressComponent.city})
 
-                  let foundCity = findCityInfo(resp.data.result.addressComponent.city);
+                  let foundCity = findCityInfo(resp.data.result.addressComponent.district);
+                  if(foundCity === undefined){
+                    foundCity = findCityInfo(resp.data.result.addressComponent.city);
+                  }
                   foundCity.longitude = res.longitude;
                   foundCity.latitude = res.latitude;
                   this.setData({

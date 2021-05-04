@@ -80,8 +80,8 @@ function callBaiduMapAPI(apiOption,inputData){
   // data.timestamp=Date.now();
 
   console.log(`callBaiduMapAPI:${targetUrl}`)
-  console.log('data=')
-  console.log(data)
+  // console.log('data=')
+  // console.log(data)
 
   if(apiOption.method === "GET"){
 

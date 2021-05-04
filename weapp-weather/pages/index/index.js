@@ -16,6 +16,7 @@ Page({
         // endDate:format(new Date((+new Date()) + 1000*3600*24* 2000),'yyyy-MM-dd') //给一个很大的日期选择范围
     },
     stringifyPlace(place){
+        // return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
         return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
     },
     onLoad() {
