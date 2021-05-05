@@ -2127,7 +2127,8 @@ let cityData = {
         六安: {
             六安: { AREAID: '101221501', NAMECN: '六安' },
             霍邱: { AREAID: '101221502', NAMECN: '霍邱' },
-            寿县: { AREAID: '101221503', NAMECN: '寿县' },
+            金安: { AREAID: '101221504', NAMECN: '金安' },
+            // 寿县: { AREAID: '101221503', NAMECN: '寿县' },
             金寨: { AREAID: '101221505', NAMECN: '金寨' },
             霍山: { AREAID: '101221506', NAMECN: '霍山' },
             舒城: { AREAID: '101221507', NAMECN: '舒城' },
@@ -3333,7 +3334,29 @@ function findCityInfo(name){
     
     // console.log(`NOT found ${name}`);
 }
+function findCityByCode(code){
+    for(let provinceName in cityData){
+        let cities = cityData[provinceName];
+        for(let cityName in cities){
+            let subCities = cities[cityName];
+            for(let subCity in subCities){
+                if(subCities[subCity].AREAID == code){
+                    // console.log(`found ${name} exactly in ${subCity}`);
+                    //精确匹配
+                    return {
+                        province: provinceName,
+                        city: cityName,
+                        district:subCity,
+                        code: subCities[subCity].AREAID
+                    };
+                }
+            }
+        }
+    }
+    
+    // console.log(`NOT found ${name}`);
+}
 
 module.exports = {
-    cityData,findCityInfo
+    cityData,findCityInfo,findCityByCode
 }

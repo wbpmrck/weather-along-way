@@ -1,4 +1,5 @@
 import {Cache,setCacheData,getCachedData} from "./cache"
+import {weather} from "./code-dic";
 const enableCache = true; //是否开启请求缓存
 const cacheTime = 3600 * 2; //2个小时的缓存（天气信息没有必要频繁刷新）
 
@@ -65,47 +66,55 @@ function callWeatherAPi(apiOption,inputData){
 let responseParser = {
   //TODO:用于解析《数据接口使用说明文档》中的接口响应字段
   parseCityInterface:function(data){
-    let keys = Object.keys(data.forecast["12h"]);
     let ret ={};
-    ret.adcode = keys[0];
-    ret["12h"] = data.forecast["12h"][keys[0]]["1001001"].map((item,index)=>{
-      let tm = item["000"].split("~");
-      return {
-        timeBegin:tm[0],
-        timeEnd:tm[1],
-        weather:item["001"],
-        maxTemp:item["002"],
-        minTemp:item["003"],
-        windPower:item["004"],
-        windDirection:item["005"]
-      }
-    });
+    try{
+      let keys = Object.keys(data.forecast["12h"]);
+      ret.adcode = keys[0];
+      ret["12h"] = data.forecast["12h"][keys[0]]["1001001"].map((item,index)=>{
+        let tm = item["000"].split("~");
+        return {
+          timeBegin:tm[0],
+          timeEnd:tm[1],
+          weather:item["001"],
+          maxTemp:item["002"],
+          minTemp:item["003"],
+          windPower:item["004"],
+          windDirection:item["005"]
+        }
+      });
 
-    ret["1h"] = data.forecast["1h"][keys[0]]["1001001"].map((item,index)=>{
-      return {
-        time:item["000"],
-        weather:item["001"],
-        temp:item["002"],
-        windPower:item["003"],
-        windDirection:item["004"]
-      }
-    });
+      ret["1h"] = data.forecast["1h"][keys[0]]["1001001"].map((item,index)=>{
+        return {
+          time:item["000"],
+          weather:item["001"],
+          temp:item["002"],
+          windPower:item["003"],
+          windDirection:item["004"]
+        }
+      });
 
-    ret.alarm = data.alarm[keys[0]]["1001003"].map((item,index)=>{
-      return {
-        province:item["001"],
-        city:item["002"],
-        district:item["003"],
-        alarmTypeCode:item["004"],
-        alarmTypeName:item["005"],
-        alarmLevel:item["006"],
-        alarmLevelName:item["007"],
-        alarmTime:item["008"],
-        content:item["009"],
-        title:item["010"],
-        linkAddress:item["011"],
-      }
-    }); // 空数组代表无警报信息
+      ret.alarm = data.alarm[keys[0]]["1001003"].map((item,index)=>{
+        return {
+          province:item["001"],
+          city:item["002"],
+          district:item["003"],
+          alarmTypeCode:item["004"],
+          alarmTypeName:item["005"],
+          alarmLevel:item["006"],
+          alarmLevelName:item["007"],
+          alarmTime:item["008"],
+          content:item["009"],
+          title:item["010"],
+          linkAddress:item["011"],
+        }
+      }); // 空数组代表无警报信息
+
+    }catch(e){
+      console.error(`获取城市天气失败！`);
+      console.log(data);
+      console.error(e);
+      ret = undefined;
+    }
 
     return ret;
   },
@@ -116,5 +125,8 @@ module.exports = {
   responseParser,
   apis:{
     EVERY_HOUR
+  },
+  weatherCodes:{
+    weather
   }
 }

@@ -1,8 +1,8 @@
 <View>
   <View class="weather-summary">
     <View class="summary-item">
-      <View class="count fix-width-1">7个</View>
-      <View class="count fix-width-1">5个</View>
+      <View class="count fix-width-1">{{notGood}}个</View>
+      <View class="count fix-width-1">{{alarmCount}}个</View>
     </View>
     <View class="summary-item">
       <View class="text fix-width-1">区域有不利天气</View>
