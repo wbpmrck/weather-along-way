@@ -62,6 +62,9 @@ Page({
         console.log(cachedData.mapCenter);
         //设置当前选择的下标
         this.setData(cachedData);
+        // 将切换的路线元数据存入到全局数据，以便于详情页面去获取
+        const appInstance = getApp();
+        appInstance.globalData.currentRouteData = cachedData;
         wx.showToast({ title: '切换路线成功' })
     },
     chooseRoute:function(evt){
@@ -266,7 +269,7 @@ Page({
             }
         });
 
-        //TODO:计算不利天气数量、计算天气预警数量
+        //计算不利天气数量、计算天气预警数量
         let notGood = 0;
         let alarmCount = 0;
         markers.forEach((marker,index)=>{
@@ -740,7 +743,11 @@ Page({
 
   },
   onMarkertap(args){
-      console.log(args)
+      console.log(args);
+      let markerId = args.detail.markerId;
+      wx.navigateTo({
+        url: `../detail-one/detail-one?markerId=${markerId}`,
+    })
   },  
   onCallouttap(args){
       console.log(args)
