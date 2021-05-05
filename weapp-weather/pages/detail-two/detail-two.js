@@ -18,7 +18,7 @@ Page({
       toLat:"",
       toLnt:"",
 
-      markerIdSeed:+new Date(), //生成自定义marker的种子
+      markerIdSeed: 10000, //生成自定义marker的种子
       startTime:"", //前面传入出发时间
       startTimeDesc:"", //出发时间描述
 
@@ -237,7 +237,7 @@ Page({
     
                                 if(record.timeBegin <= arriveAt && arriveAt <= record.timeEnd){
                                     found = true;
-                                    console.log(`marker :${m.markerId} arriveAt = ${arriveAt},has suit weather`)
+                                    console.log(`marker :${m.id} arriveAt = ${arriveAt},has suit weather`)
                                     m.weatherWhenArrive = {
                                         maxTemp: record.maxTemp,
                                         minTemp: record.minTemp,
@@ -253,7 +253,7 @@ Page({
                                 }
                             }
                             if(!found){
-                                console.error(`marker :${m.markerId} arriveAt = ${arriveAt},no suit weather`)
+                                console.error(`marker :${m.id} arriveAt = ${arriveAt},no suit weather`)
                             }
                         }
                     })
@@ -276,18 +276,18 @@ Page({
             let weatherWhenArrive = marker.weatherWhenArrive;
             if(weatherWhenArrive){
                 if(weatherWhenArrive.weather > "01" || weatherWhenArrive.windPower > "5"){
-                    console.log(`marker:${marker.markerId} has bad weather!`)
+                    console.log(`marker:${marker.id} has bad weather!`)
                     marker.notGood = true; //标记不利天气
                     marker.callout.borderColor="#ff2e2a";
                     marker.callout.borderWidth=4;
                     notGood++;
                 }
             }else{
-                console.error(`marker :${marker.markerId} no suit weather`)
+                console.error(`marker :${marker.id} no suit weather`)
             }
 
             if(marker.alarm && marker.alarm.length>0){
-                console.log(`marker:${marker.markerId} has alarm!`)
+                console.log(`marker:${marker.id} has alarm!`)
                 alarmCount++;
             }
         });
@@ -350,7 +350,7 @@ Page({
                     let p_latitude = coord[1];
                     let p_longitude = coord[0];
                     let theMarker =  {
-                        markerId: this.data.markerIdSeed++,
+                        id: this.data.markerIdSeed++,
                         latitude: p_latitude,
                         longitude:p_longitude,
                         distancePassed,//从起点到这个marker经过的距离(米)
@@ -448,6 +448,7 @@ Page({
         
         let routeMetaData = {
             routeName:"",
+            startTime:this.data.startTime,
             weatherDesc:"天气不错/有预警天气/有不利天气",
             distance,//距离（米）
             distanceDesc:this.parseDistance(distance),
@@ -743,14 +744,18 @@ Page({
 
   },
   onMarkertap(args){
+    console.log(args);
+    let markerId = args.detail.markerId;
+    wx.navigateTo({
+        url: `../detail-one/detail-one?markerId=${markerId}`,
+    });
+  },  
+  onCallouttap(args){
       console.log(args);
       let markerId = args.detail.markerId;
       wx.navigateTo({
-        url: `../detail-one/detail-one?markerId=${markerId}`,
-    })
-  },  
-  onCallouttap(args){
-      console.log(args)
+          url: `../detail-one/detail-one?markerId=${markerId}`,
+      });
   },
   navigateToDetailOne() {
       wx.navigateTo({

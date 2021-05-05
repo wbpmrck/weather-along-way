@@ -31,6 +31,8 @@
       {{alarm.title}}
     </view>
   </view>
-  <view class="map">map</view>
+  <view class="map-region">
+    <map class="map" show-compass="{{true}}" show-scale="{{true}}" scale="{{currentRouteData.scale}}" polyline="{{currentRouteData.polyline}}" longitude="{{currentRouteData.mapCenter.longitude}}" latitude="{{currentRouteData.mapCenter.latitude}}" markers="{{currentRouteData.markers}}" bindmarkertap="onMarkertap" bindcallouttap="onCallouttap"></map>
+  </view>
   <view class="time  bg-gradient">出发:{{startTimeDesc}}---> 到达:{{arriveTimeDesc}}</view>
 </view>
