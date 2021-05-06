@@ -5,7 +5,7 @@ import {request} from "../../libs/wechat-helper/wx-request-helper"
 import moment from "../../libs/moment/moment-wrapper"
 import {removeDump,NOT_DEAL_ME} from "../../utils/array-util"
 import {kmForGutter} from "../../configs/index"
-import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes} from "../../libs/china-weather/sdk"
+import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
 Page({
   data: {
       //起始和结束地点信息
@@ -227,7 +227,7 @@ Page({
                         m.weather = parsed;
 
                         m.alarm = parsed.alarm;
-                        // TODO:根据到达时间提取用户关心的到达天气信息
+                        // 根据到达时间提取用户关心的到达天气信息
                         let arriveAt = moment(m.arriveTime).format("yyyyMMDDHHmmss");
                         if(parsed){
                             let found = false;
@@ -245,7 +245,7 @@ Page({
                                         windDirection: record.windDirection,
                                         windPower: record.windPower,
                                     };
-                                    //TODO:更新他的图标信息
+                                    //更新他的图标信息
                                     let hour = m.arriveTime.getHours();
                                     m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
                                     m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
@@ -275,9 +275,10 @@ Page({
         markers.forEach((marker,index)=>{
             let weatherWhenArrive = marker.weatherWhenArrive;
             if(weatherWhenArrive){
-                if(weatherWhenArrive.weather > "01" || weatherWhenArrive.windPower > "5"){
+                // if(weatherWhenArrive.weather > "01" || weatherWhenArrive.windPower > "5"){
+                if(isNotGood(weatherWhenArrive.weather,weatherWhenArrive.windPower)){
                     console.log(`marker:${marker.id} has bad weather!`)
-                    marker.notGood = true; //标记不利天气
+                    marker.notGoodWhenArrive = true; //标记不利天气
                     marker.callout.borderColor="#ff2e2a";
                     marker.callout.borderWidth=4;
                     notGood++;
@@ -650,40 +651,70 @@ Page({
             // let res2 = await this.queryRoute("6");
             // let res3 = await this.queryRoute("7");
 
-            let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("5"),this.queryRoute("6")]);
+            let queryRouteResArray = await Promise.all([this.queryRoute("4"),this.queryRoute("5"),this.queryRoute("6")]);
+            // let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("5"),this.queryRoute("6")]);
 
-            let rd1 = this.genRouteData2(res1,kmForGutter);
-            let rd2 = this.genRouteData2(res2,kmForGutter);
-            let rd3 = this.genRouteData2(res3,kmForGutter);
+            let routeMetaDataResArray =[];
+            queryRouteResArray.forEach(res =>{
+                if(res){
+                    routeMetaDataResArray.push(this.fullfillRouteInfo(this.genRouteData2(res,kmForGutter)))
+                }
+            })
 
 
-            let [r1,r2,r3] = await Promise.all([this.fullfillRouteInfo(rd1),this.fullfillRouteInfo(rd2),this.fullfillRouteInfo(rd3)]);
+            // let rd1 = this.genRouteData2(res1,kmForGutter);
+            // let rd2 = this.genRouteData2(res2,kmForGutter);
+            // let rd3 = this.genRouteData2(res3,kmForGutter);
 
-            //TODO:把路径按照时间快慢排序
-            let ar = [r1,r2,r3];
-            ar.sort((a,b)=>{
+
+            let fullfillRouteResArray = await Promise.all(routeMetaDataResArray);
+            // let [r1,r2,r3] = await Promise.all([this.fullfillRouteInfo(rd1),this.fullfillRouteInfo(rd2),this.fullfillRouteInfo(rd3)]);
+
+            // 把路径按照时间快慢排序
+            fullfillRouteResArray.sort((a,b)=>{
                 return a.duration - b.duration
             })
 
-            ar.forEach((a,idx)=>{a.currentSelect = idx})
+            fullfillRouteResArray.forEach((a,idx)=>{a.currentSelect = idx});
 
-            ar[0].routeName = "时间少";
-            ar[1].routeName = "收费多";
-            ar[2].routeName = "收费少 时间多";
+            fullfillRouteResArray[0] && (fullfillRouteResArray[0].routeName = "时间少")
+            fullfillRouteResArray[1] && (fullfillRouteResArray[1].routeName = "收费多")
+            fullfillRouteResArray[2] && (fullfillRouteResArray[2].routeName = "收费少 时间多")
 
             console.log('获取天气信息：')
-
             //因为天气数据有本地接口缓存，所以不同路线分开调用并行请求更能利用缓存
-            ar[0] = await this.fullfillRouteWeatherInfo(ar[0]);
-            ar[1] = await this.fullfillRouteWeatherInfo(ar[1]);
-            ar[2] = await this.fullfillRouteWeatherInfo(ar[2]);
-            console.log(ar[0]);
-            console.log(ar[1]);
-            console.log(ar[2]);
 
-            this.data.allRoutes.push(ar[0]);
-            this.data.allRoutes.push(ar[1]);
-            this.data.allRoutes.push(ar[2]);
+            for(let i=0;i<fullfillRouteResArray.length;i++){
+                let d = await this.fullfillRouteWeatherInfo(fullfillRouteResArray[i]);
+                this.data.allRoutes.push(d);
+            }
+            console.log(this.data.allRoutes);
+
+            // 把路径按照时间快慢排序
+            // let ar = [r1,r2,r3];
+            // ar.sort((a,b)=>{
+            //     return a.duration - b.duration
+            // })
+
+            // ar.forEach((a,idx)=>{a.currentSelect = idx})
+
+            // ar[0].routeName = "时间少";
+            // ar[1].routeName = "收费多";
+            // ar[2].routeName = "收费少 时间多";
+
+            // console.log('获取天气信息：')
+
+            // //因为天气数据有本地接口缓存，所以不同路线分开调用并行请求更能利用缓存
+            // ar[0] = await this.fullfillRouteWeatherInfo(ar[0]);
+            // ar[1] = await this.fullfillRouteWeatherInfo(ar[1]);
+            // ar[2] = await this.fullfillRouteWeatherInfo(ar[2]);
+            // console.log(ar[0]);
+            // console.log(ar[1]);
+            // console.log(ar[2]);
+
+            // this.data.allRoutes.push(ar[0]);
+            // this.data.allRoutes.push(ar[1]);
+            // this.data.allRoutes.push(ar[2]);
 
             this.setData({
                 allRoutes:this.data.allRoutes

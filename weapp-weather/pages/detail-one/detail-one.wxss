@@ -12,6 +12,7 @@
   font-size: 48rpx;
   font-weight: bold;
   margin-right: 12rpx;
+  /* min-width: 100rpx; */
 }
 
 .city {
@@ -106,6 +107,5 @@
   z-index: 1;
   bottom: 0;
   height: 140rpx;
-  line-height: 100rpx;
   text-align: center;
 }

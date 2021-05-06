@@ -2542,6 +2542,7 @@ let cityData = {
             荔波: { AREAID: '101260412', NAMECN: '荔波' },
         },
         黔东南: {
+            黔东南: { AREAID: '101260506', NAMECN: '黔东南' },
             凯里: { AREAID: '101260501', NAMECN: '凯里' },
             岑巩: { AREAID: '101260502', NAMECN: '岑巩' },
             施秉: { AREAID: '101260503', NAMECN: '施秉' },
@@ -2582,11 +2583,13 @@ let cityData = {
             黔西: { AREAID: '101260708', NAMECN: '黔西' },
         },
         六盘水: {
+            六盘水: { AREAID: '101260803', NAMECN: '六盘水' },
             水城: { AREAID: '101260801', NAMECN: '水城' },
             六枝: { AREAID: '101260802', NAMECN: '六枝' },
             盘县: { AREAID: '101260804', NAMECN: '盘县' },
         },
         黔西南: {
+            黔西南: { AREAID: '101260906', NAMECN: '黔西南' },
             兴义: { AREAID: '101260901', NAMECN: '兴义' },
             晴隆: { AREAID: '101260902', NAMECN: '晴隆' },
             兴仁: { AREAID: '101260903', NAMECN: '兴仁' },

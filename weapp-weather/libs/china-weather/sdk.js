@@ -1,5 +1,5 @@
 import {Cache,setCacheData,getCachedData} from "./cache"
-import {weather} from "./code-dic";
+import {weather,isNotGood} from "./code-dic";
 const enableCache = true; //是否开启请求缓存
 const cacheTime = 3600 * 2; //2个小时的缓存（天气信息没有必要频繁刷新）
 
@@ -126,6 +126,7 @@ module.exports = {
   apis:{
     EVERY_HOUR
   },
+  isNotGood,
   weatherCodes:{
     weather
   }

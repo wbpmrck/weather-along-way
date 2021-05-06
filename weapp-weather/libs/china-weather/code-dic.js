@@ -44,9 +44,14 @@ const weather = {
   "301":"雨",
   "302":"雪",
 }
-function isNotGood(weatherCode){
-  
+function isNotGood(weatherCode,windPower){
+  if(weatherCode > "01" || windPower > "5"){
+    return true;
+  }else{
+    return false;
+  }
 }
 module.exports = {
   weather,
+  isNotGood,
 }

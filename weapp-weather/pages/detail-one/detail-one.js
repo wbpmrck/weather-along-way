@@ -1,5 +1,5 @@
 
-import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes} from "../../libs/china-weather/sdk"
+import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
 
 import moment from "../../libs/moment/moment-wrapper"
 Page({
@@ -35,6 +35,8 @@ Page({
     if(markers && markers.length >0){
       let marker = markers[0]; 
 
+      console.log(marker);
+
       // 根据1小时天气数据，计算“当天”的天气情况
       // 温度范围按照小时预报落在当前范围内的上下限取值
       // 天气情况，统计当天出现最多的天气编码，进行翻译获取
@@ -59,6 +61,8 @@ Page({
         }else{
           weatherCount[weather] = 1;
         }
+
+        // TODO:如果超过当天，跳出计算
       });
 
       let max = 0;
@@ -87,9 +91,29 @@ Page({
 
       let hour = arriveTime.getHours();
       let arriveTimeDayOrNight = (hour<18 && hour >4)?"d":"n";
-      // 计算不利天气持续时间
+      // 计算不利天气持续时间（仅当到达时天气不好才计算）
+      // if(marker.notGoodWhenArrive){
+      //   let lastStart = moment(arriveTime).format("yyyyMMDDHHmmss");
+      //   let startCount = false;
+      //   for(let i=0;i<oneHourData.length;i++){
+      //     let record = oneHourData[i];
 
-      // 处理当前城市预警信息
+      //     if(!startCount){
+      //       // TODO:如果还没开始累计持续时间，就判断是否开始计时
+      //       if(record.time <= lastStart && lastStart <= record.timeEnd){
+      //         startCount = true;
+      //       }
+      //     }else {
+      //       // 目前处于计时状态，则寻找下一个天气转折点
+      //       if(!isNotGood(record.weather,record.windPower)){
+
+      //       }
+
+      //     }
+      //   } 
+      // }
+
+      // TODO:处理当前城市预警信息
       let alarms = [];
       
       this.setData({
@@ -112,8 +136,11 @@ Page({
         todayMaxTemp:maxTemp,
     
       });
+
+      return marker;
     }else{
-      console.error(`marker :${markerId} not exist!`)
+      console.error(`marker :${markerId} not exist!`);
+      return undefined;
     }
   },
 
@@ -129,8 +156,13 @@ Page({
 
     // 获取当前显示的marker
     let markerId = parseInt(params.markerId);
-    this.grabMarkerData(markerId,currentRouteData);
+    let marker = this.grabMarkerData(markerId,currentRouteData);
 
+    // 详情页面默认定位的地方是点击的城市
+    currentRouteData.mapCenter = {
+      latitude: marker.latitude,
+      longitude: marker.longitude
+    };
     // 显示路线信息
     this.setData({
       currentRouteData
