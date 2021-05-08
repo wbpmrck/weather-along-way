@@ -9,8 +9,8 @@ Page({
     currentDistrict:"雁塔区",
 
     currentAlarms:[
-      {title:"邯郸市发布结冰橙色预警"},
-      {title:"邯郸市发布结冰橙色预警"},
+      // {title:"邯郸市发布结冰橙色预警"},
+      // {title:"邯郸市发布结冰橙色预警"},
     ],
 
     startTimeDesc:"今天08:23",
@@ -19,7 +19,8 @@ Page({
     arriveTimeDayOrNight:"d",
     arriveTimeMinTemp:"23",
     arriveTimeMaxTemp:"30",
-    notGoodLastTime:"5小时",
+    notGoodLastTime:0,
+    notGoodLastTimeDesc:"",
 
     todayWeather:"小雨转大雨",
     todayMinTemp:"6",
@@ -89,32 +90,54 @@ Page({
       let arriveTimeMaxTemp = weatherWhenArrive.maxTemp;
       let arriveTimeWeatherCode = weatherWhenArrive.weather;
 
+      let notGoodLastTime = 0;
+
       let hour = arriveTime.getHours();
       let arriveTimeDayOrNight = (hour<18 && hour >4)?"d":"n";
       // 计算不利天气持续时间（仅当到达时天气不好才计算）
-      // if(marker.notGoodWhenArrive){
-      //   let lastStart = moment(arriveTime).format("yyyyMMDDHHmmss");
-      //   let startCount = false;
-      //   for(let i=0;i<oneHourData.length;i++){
-      //     let record = oneHourData[i];
+      if(marker.notGoodWhenArrive){
+        // console.log('计算不利天气持续时间（仅当到达时天气不好才计算）')
+        let lastStart = moment(arriveTime).format("YYYYMMDDHHmmss");
+        let startCount = false;
+        for(let i=0;i<oneHourData.length;i++){
+          let record = oneHourData[i];
+          record.timeEnd = moment(record.time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+          // console.log(`3 record.timeEnd = ${record.timeEnd}`)
+          // console.log(`startCount = ${startCount}`)
 
-      //     if(!startCount){
-      //       // TODO:如果还没开始累计持续时间，就判断是否开始计时
-      //       if(record.time <= lastStart && lastStart <= record.timeEnd){
-      //         startCount = true;
-      //       }
-      //     }else {
-      //       // 目前处于计时状态，则寻找下一个天气转折点
-      //       if(!isNotGood(record.weather,record.windPower)){
+          if(!startCount){
 
-      //       }
+          // console.log(`record.time = ${record.time}`)
+          // console.log(`record.timeEnd = ${record.timeEnd}`)
+          // console.log(`lastStart = ${lastStart}`)
+            // TODO:如果还没开始累计持续时间，就判断是否开始计时
+            if(record.time <= lastStart && lastStart <= record.timeEnd){
+              startCount = true;
+              // console.log(`startCount = ${startCount}`)
+            }
+          }else {
+            // 目前处于计时状态，则寻找下一个天气转折点
+            if(!isNotGood(record.weather,record.windPower)){
+              break
+            }else{
+              notGoodLastTime++;
+              // console.log(`notGoodLastTime = ${notGoodLastTime}`)
+            }
 
-      //     }
-      //   } 
-      // }
+          }
+        } 
+      }
 
       // TODO:处理当前城市预警信息
+      // currentAlarms:[
+      //   {title:"邯郸市发布结冰橙色预警"},
+      //   {title:"邯郸市发布结冰橙色预警"},
+      // ],
       let alarms = [];
+
+      alarms = marker.alarm.map(a=>{
+        return {title:`${marker.city}市发布${a.alarmTypeName}${a.alarmLevelName}预警`}
+      })
       
       this.setData({
         currentProvince:marker.province,
@@ -129,8 +152,8 @@ Page({
         arriveTimeDayOrNight,
         arriveTimeMinTemp,
         arriveTimeMaxTemp,
-        notGoodLastTime:"5小时",
-    
+        notGoodLastTime,
+        notGoodLastTimeDesc:notGoodLastTime===0?"":notGoodLastTime.toString()+"小时",
         todayWeather:weatherCode,
         todayMinTemp:minTemp,
         todayMaxTemp:maxTemp,

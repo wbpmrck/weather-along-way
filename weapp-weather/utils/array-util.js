@@ -19,8 +19,17 @@ function removeDump(ar,condition){
   }
   return ar;
 }
+function removeItem(ar,condition){
+  for(let i = ar.length - 1;i>=0;i--){
+    if(condition(ar[i],i)){
+      ar.splice(i,1);
+    }
+  }
+  return ar;
+}
 
 module.exports = {
+  removeItem,
   removeDump,
   NOT_DEAL_ME
 }

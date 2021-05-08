@@ -3,7 +3,7 @@ import {cityData,findCityInfo,findCityByCode} from '../city/city-data'
 import {callBaiduMapAPI,apis} from "../../libs/baidu-map/webapi-sdk"
 import {request} from "../../libs/wechat-helper/wx-request-helper"
 import moment from "../../libs/moment/moment-wrapper"
-import {removeDump,NOT_DEAL_ME} from "../../utils/array-util"
+import {removeDump,removeItem,NOT_DEAL_ME} from "../../utils/array-util"
 import {kmForGutter} from "../../configs/index"
 import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
 Page({
@@ -120,7 +120,7 @@ Page({
             let results = await Promise.all(getCityQueue);
 
             //console.log('fullfillRouteInfo：');
-            //console.log(results);
+            console.log(results);
 
             results.forEach( (resp,idx)=>{
                 if(resp && resp.statusCode === 200 && resp.data.status === 0){
@@ -128,21 +128,31 @@ Page({
                     if(foundCity === undefined){
                         console.log(`NOT found ${resp.data.result.addressComponent.district},use ${resp.data.result.addressComponent.city} instead!`);
                         foundCity = findCityInfo(resp.data.result.addressComponent.city);
-                        markers[idx+1].callout.content =foundCity.city; //只找到城市，则显示城市
+                        if(foundCity){
+                            markers[idx+1].callout.content =foundCity.city; //只找到城市，则显示城市
+                            markers[idx+1].adcode =foundCity.code;
+                            markers[idx+1].province =foundCity.province;
+                            markers[idx+1].city =foundCity.city;
+                            markers[idx+1].district =foundCity.district;
+                        }else{
+                            //TODO：如果找不到城市，或者百度地图返回的city为空，则放弃该marker
+                            markers[idx+1].delete = true;
+
+                        }
                     }else{
                         markers[idx+1].callout.content =foundCity.city+'-'+foundCity.district; //找到区县，则显示区县
+                        markers[idx+1].adcode =foundCity.code;
+                        markers[idx+1].province =foundCity.province;
+                        markers[idx+1].city =foundCity.city;
+                        markers[idx+1].district =foundCity.district;
                     }
-                    markers[idx+1].adcode =foundCity.code;
-                    markers[idx+1].province =foundCity.province;
-                    markers[idx+1].city =foundCity.city;
-                    markers[idx+1].district =foundCity.district;
                 }
             })
           }catch(e){
             console.error(e);
           }
-          //console.log(`before remove dump:`);
-          //console.log(markers);
+          console.log(`before remove dump:`);
+          console.log(markers);
           removeDump(routeMetaData.markers,(item,idx)=>{
               //起点和终止点不参与去重，防止被删掉
               if(idx === 0 || idx === routeMetaData.markers.length-1){
@@ -151,8 +161,15 @@ Page({
                 return item.callout.content
               }
           });
+          removeItem(routeMetaData.markers,(item,idx)=>{
+              if(item.delete){
+                console.log(`从路由中删除marker:${item.id}, ${item.province}`)
+                console.log(item)
+                return true;
+              }
+           });
           //console.log(`after remove dump:`);
-          //console.log(markers);
+          console.log(markers);
 
         //对城市进行去重复，按照起点--->终点 方向，保留第一次出现的城市的check point
         return routeMetaData
@@ -203,6 +220,7 @@ Page({
         let markers = routeMetaData.markers;
         console.log(`has ${markers.length} markers`)
         markers.forEach((marker,index)=>{
+            // console.log(`${index}-${marker.adcode}`)
             getWeatherQueue.push(callWeatherAPi(weatherAPI.EVERY_HOUR,{
                 area:marker.adcode
             }))
@@ -212,9 +230,10 @@ Page({
             if(resp && resp.statusCode === 200 && resp.data){
                 console.log(resp);
                 let parsed = responseParser.parseCityInterface(resp.data);
-                console.log(parsed);
+                // console.log(parsed);
                 if(parsed === undefined){
                     // TODO:获取天气失败了的处理.(将该marker删除？？)
+                    // console.log(`${idx}-获取天气失败了`)
                 }
                 
                 let marker = markers.filter(m=>{

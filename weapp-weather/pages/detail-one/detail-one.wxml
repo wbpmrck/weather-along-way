@@ -21,9 +21,9 @@
         <view class="temp">{{arriveTimeMinTemp}}℃</view>
       </view>
     </view>
-    <view class="not-good-region">
+    <view class="not-good-region {{notGoodLastTime === 0?'hidden':''}}">
       <view class="label">不利天气持续</view>
-      <view class="content">{{notGoodLastTime}}</view>
+      <view class="content">{{notGoodLastTimeDesc}}</view>
     </view>
   </view>
   <view class="alarms">
