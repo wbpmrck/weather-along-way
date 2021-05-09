@@ -1,6 +1,6 @@
 <!-- index.swan -->
 <view>
-  <map class="map" longitude="{{longitude}}" latitude="{{latitude}}"></map>
+  <map class="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" markers="{{markers}}" ></map>
   <view class="container h-middle">
     <view class="bg-gradient info">
       <view class="bottom-divide">
@@ -33,8 +33,10 @@
     <view class="search-log">
       <view class="title">查询记录</view>
       <view class="divider"></view>
-      <view class="list-item" s-for="item in list" bindtap="navigateToDetailTwo">
-        <view>{{item.from}} - {{item.to}}</view>
+      <view class="list-item" wx:for="{{history}}" wx:for-index="idx" wx:for-item="his" wx:key="id"  bindtap="queryHistory">
+        <view
+         data-idx="{{idx}}" 
+         class="log">{{his.from}} - {{his.to}}</view>
         <view class="arrow-right bg-gradient"></view>
       </view>
     </view>

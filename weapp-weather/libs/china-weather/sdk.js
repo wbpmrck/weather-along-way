@@ -45,12 +45,22 @@ function callWeatherAPi(apiOption,inputData){
       data,
       method:apiOption.method,
       success(res) {
-        // 如果开启缓存，则缓存结果
-        if(enableCache){
-          // console.log('set cache for '+cacheKey)
-          setCacheData(cacheKey,res,cacheTime);
+        //天气网数据返回有forecast字段，有就代表正常返回
+        if(res && res.statusCode === 200 && res.data && res.data.forecast !== undefined){
+          // 如果开启缓存，则缓存结果
+          if(enableCache){
+            // console.log('set cache for '+cacheKey)
+            setCacheData(cacheKey,res,cacheTime);
+          }
+          resolve(res);
+        }else{
+          reject({
+            res,
+            msg: '请求成功，接口响应失败',
+            url: targetUrl,
+            method:apiOption.method
+          });
         }
-        resolve(res);
       },
       fail() {
         reject({

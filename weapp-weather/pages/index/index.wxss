@@ -124,4 +124,14 @@
 /* 搜索历史记录区域 */
 .search-log {
   min-height: 300rpx;
+  margin-top: 20rpx;
+}
+
+.search-log .title {
+  font-size: 40rpx;
+}
+
+.search-log .log {
+  font-size: 32rpx;
+  color: gray;
 }

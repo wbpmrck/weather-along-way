@@ -30,7 +30,7 @@ Page({
       distanceDesc:"",
       duration:0,//时长（秒）
       durationDesc:"",
-      scale:16,
+      scale:5,
       polyline:[],
       //地图中心点经纬度
       mapCenter:{
@@ -240,14 +240,19 @@ Page({
                     // console.log(`find marker:${m.adcode},compare with:${parsed.adcode}`)
                     return m.adcode == parsed.adcode
                 });
+                console.log('marker:');
+                console.log(marker);
+
                 if(marker && marker.length > 0){
                     marker.forEach(m=>{
 
                         m.weather = parsed;
 
                         m.alarm = parsed.alarm;
+                        
                         // 根据到达时间提取用户关心的到达天气信息
                         let arriveAt = moment(m.arriveTime).format("yyyyMMDDHHmmss");
+                        console.log(`${m.id}.arriveAt = ${arriveAt}  ,m.arriveTime=${m.arriveTime}`);
                         if(parsed){
                             let found = false;
                             
@@ -304,7 +309,7 @@ Page({
                             }
 
                             if(!found){
-                                console.error(`marker :${m.id},${marker.adcode}  arriveAt = ${arriveAt} ,no suit weather`)
+                                console.error(`marker :${m.id},${m.adcode}  arriveAt = ${arriveAt} ,no suit weather`)
                             }
                         }
                     })
@@ -495,18 +500,18 @@ Page({
         markers[markers.length-1].callout.zIndex= 9999;
 
         //根据开始结束点，重设地图的中心点和缩放
-        // let mapCenter = {
-        //     latitude: (parseFloat(markers[0].latitude) + parseFloat(markers[markers.length-1].latitude))/2,
-        //     longitude: (parseFloat(markers[0].longitude) + parseFloat(markers[markers.length-1].longitude))/2,
-        //   };
-
-
-          let mapCenter = {
-            latitude: markers[0].latitude,
-            longitude: markers[0].longitude
+        let mapCenter = {
+            latitude: (parseFloat(markers[0].latitude) + parseFloat(markers[markers.length-1].latitude))/2,
+            longitude: (parseFloat(markers[0].longitude) + parseFloat(markers[markers.length-1].longitude))/2,
           };
 
-        let scale = 8;//TODO:动态计算
+
+        //   let mapCenter = {
+        //     latitude: markers[0].latitude,
+        //     longitude: markers[0].longitude
+        //   };
+
+        let scale = 6;//TODO:动态计算
         let endTime = new Date(+this.data.startTime + (duration*1000));
         
         let routeMetaData = {
@@ -524,6 +529,8 @@ Page({
             mapCenter,
             polyline:newPath
         }
+        console.log(`get route:`);
+        console.log(routeMetaData);
         return routeMetaData;
     },
 
@@ -724,11 +731,6 @@ Page({
             })
 
 
-            // let rd1 = this.genRouteData2(res1,kmForGutter);
-            // let rd2 = this.genRouteData2(res2,kmForGutter);
-            // let rd3 = this.genRouteData2(res3,kmForGutter);
-
-
             let fullfillRouteResArray = await Promise.all(routeMetaDataResArray);
             // let [r1,r2,r3] = await Promise.all([this.fullfillRouteInfo(rd1),this.fullfillRouteInfo(rd2),this.fullfillRouteInfo(rd3)]);
 
@@ -814,7 +816,8 @@ Page({
             params.toLat = toPos.lat;
             params.toLnt = toPos.lnt;
         }
-        let startTime = new Date(`${params.date} ${params.time}`);
+        // let startTime = new Date(`${params.date} ${params.time}`);
+        let startTime = moment(`${params.date} ${params.time}`,"YYYY-MM-DD HH:mm").toDate();
 
         this.setData({
             from:params.from,

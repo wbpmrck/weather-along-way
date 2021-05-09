@@ -3,12 +3,18 @@ import {format} from '../../utils/time-util'
 import {cityData,findCityInfo} from '../city/city-data'
 import {callBaiduMapAPI,apis} from '../../libs/baidu-map/webapi-sdk';
 import moment from "../../libs/moment/moment-wrapper"
+import {
+  addHistory,
+  getHistoryData,
+} from "../../data/query-history"
 // 获取应用实例
 const app = getApp()
 
 Page({
     data: {
-        list: [],
+        markers:[],
+        history:[],
+        scale:7,
         longitude:0,
         latitude:0,
         startingPlace: {}, // {province: '',city: '', district: '', code: '',longitude: '',latitude: ''}
@@ -46,6 +52,36 @@ Page({
             startingPlace:foundCity
           })
 
+          // 设置地图当前位置的marker:
+          let theMarker =  {
+            id: this.data.markerIdSeed++,
+            latitude: this.data.latitude,
+            longitude:this.data.longitude,
+            zIndex: 100,
+            width:16,
+            height:16,
+            anchor:{
+                x:0.5,
+                y:1,
+            },
+            iconPath: '../../resource/image/marker.png',
+            callout: {
+                display: 'ALWAYS',
+                content: `您在这里！`,
+                color: '#fff',
+                fontSize: '16',
+                borderRadius: 10,
+                bgColor: '#ff221a',
+                padding: 2,
+                textAlign: 'center'
+            }
+        };
+        this.data.markers.push(theMarker);
+        this.setData({
+          markers:this.data.markers
+        })
+
+
           wx.showToast({ title: '请选择目的地',duration:900 })
         }else{
           wx.showToast({ title: '获取定位失败' ,duration:900})
@@ -56,13 +92,21 @@ Page({
         console.error(e);
       }
 
-      //TODO:设置默认出发时间为当前
+      //设置默认出发时间为当前
       let date = moment().format("YYYY-MM-DD");
       let time = moment().format("HH:mm");
       this.setData({
         date,
         time,
-      })
+      });
+
+      // 获取历史查询数据
+      let history = getHistoryData();
+      if(history){
+        this.setData({
+          history,
+        })
+      }
 
     },
     onLoad() {
@@ -87,7 +131,25 @@ Page({
             },
         })
     },
-    onShow() {},
+    onShow() {
+      // 获取历史查询数据
+      let history = getHistoryData();
+      if(history){
+        this.setData({
+          history,
+        })
+      }
+    },
+
+    queryHistory(evt) {
+      // 从点击的历史信息中获取查询参数
+      console.log(evt);
+      let param = this.data.history[evt.target.dataset.idx];
+      wx.navigateTo({
+          url: `../detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
+      })
+    },
+    
     navigateToDetailTwo() {
 
         //检查参数：
@@ -97,8 +159,23 @@ Page({
           return;
         }
 
+        let param = {
+          from:this.stringifyPlace(this.data.startingPlace),
+          fromCode:this.data.startingPlace.code,
+          fromLat:this.data.startingPlace.latitude||"",
+          fromLnt:this.data.startingPlace.longitude||"",
+          to:this.stringifyPlace(this.data.destination),
+          toCode:this.data.destination.code,
+          toLat:this.data.destination.latitude||"",
+          toLnt:this.data.destination.longitude||"",
+          date:this.data.date,
+          time:this.data.time
+        }
+        
+        addHistory(param);
+
         wx.navigateTo({
-            url: `../detail-two/detail-two?from=${this.stringifyPlace(this.data.startingPlace)}&fromCode=${this.data.startingPlace.code}&fromLat=${this.data.startingPlace.latitude||""}&fromLnt=${this.data.startingPlace.longitude||""}&to=${this.stringifyPlace(this.data.destination)}&toCode=${this.data.destination.code}&toLat=${this.data.destination.latitude||""}&toLnt=${this.data.destination.longitude||""}&date=${this.data.date}&time=${this.data.time}`,
+            url: `../detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
         })
     },
     chooseStartingPlace(e) {
