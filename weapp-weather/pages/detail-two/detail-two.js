@@ -65,7 +65,7 @@ Page({
         // 将切换的路线元数据存入到全局数据，以便于详情页面去获取
         const appInstance = getApp();
         appInstance.globalData.currentRouteData = cachedData;
-        wx.showToast({ title: '切换路线成功' })
+        wx.showToast({ title: '切换路线成功',duration:500 })
     },
     chooseRoute:function(evt){
         let idx = evt.currentTarget.dataset.idx;
@@ -250,29 +250,61 @@ Page({
                         let arriveAt = moment(m.arriveTime).format("yyyyMMDDHHmmss");
                         if(parsed){
                             let found = false;
-                            //从12小时预报中获取到达时候的天气信息
-                            for(let i=0;i<parsed["12h"].length;i++){
-                                let record = parsed["12h"][i];
-    
-                                if(record.timeBegin <= arriveAt && arriveAt <= record.timeEnd){
+                            
+                            // 先从1小时天气获取，没有再从12小时天气获取
+                            let oneHourData = parsed["1h"];
+                            for(let i=0;i<oneHourData.length;i++){
+                                let hourData = oneHourData[i];
+                                let {temp,time,weather,windDirection,windPower} = hourData;
+                      
+                                // 计算到达时天气
+                                let timeEnd = moment(time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+                                if(arriveAt >= time && arriveAt <= timeEnd){
                                     found = true;
-                                    console.log(`marker :${m.id} arriveAt = ${arriveAt},has suit weather`)
+                                    console.log(`找1h数据中-marker:${m.id},${m.city}的天气数据`);
+                                    
                                     m.weatherWhenArrive = {
-                                        maxTemp: record.maxTemp,
-                                        minTemp: record.minTemp,
-                                        weather: record.weather,
-                                        windDirection: record.windDirection,
-                                        windPower: record.windPower,
+                                        maxTemp: temp,
+                                        minTemp: temp,
+                                        weather: weather,
+                                        windDirection: windDirection,
+                                        windPower: windPower,
                                     };
                                     //更新他的图标信息
                                     let hour = m.arriveTime.getHours();
-                                    m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
-                                    m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
+                                    m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${weather}.png`;
+                                    m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[weather]})` 
                                     break;
                                 }
+                      
                             }
+
                             if(!found){
-                                console.error(`marker :${m.id} arriveAt = ${arriveAt},no suit weather`)
+                                //从12小时预报中获取到达时候的天气信息
+                                for(let i=0;i<parsed["12h"].length;i++){
+                                    let record = parsed["12h"][i];
+        
+                                    if(record.timeBegin <= arriveAt && arriveAt <= record.timeEnd){
+                                        found = true;
+                                        console.log(`marker :${m.id},${marker.adcode}  arriveAt = ${arriveAt},has suit weather`)
+                                        m.weatherWhenArrive = {
+                                            maxTemp: record.maxTemp,
+                                            minTemp: record.minTemp,
+                                            weather: record.weather,
+                                            windDirection: record.windDirection,
+                                            windPower: record.windPower,
+                                        };
+                                        //更新他的图标信息
+                                        let hour = m.arriveTime.getHours();
+                                        m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
+                                        m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if(!found){
+                                console.error(`marker :${m.id},${marker.adcode}  arriveAt = ${arriveAt} ,no suit weather`)
                             }
                         }
                     })
@@ -303,7 +335,7 @@ Page({
                     notGood++;
                 }
             }else{
-                console.error(`marker :${marker.id} no suit weather`)
+                console.error(`marker :${marker.id},${marker.adcode} no suit weather`)
             }
 
             if(marker.alarm && marker.alarm.length>0){
@@ -764,8 +796,12 @@ Page({
   onLoad: async function (params) {
       //console.log('detail two load:');
       console.log(params);
+
       // 监听页面加载的生命周期函数
       try{
+        wx.showLoading({
+            title: '路线规划中...',
+        });
 
         //先看传入参数是否有坐标信息（来自定位），如果没有，则根据地址查询坐标
         if(!params.fromLat){
@@ -780,27 +816,29 @@ Page({
         }
         let startTime = new Date(`${params.date} ${params.time}`);
 
-          this.setData({
-              from:params.from,
-              fromCode:params.fromCode,
-              fromLat:params.fromLat,
-              fromLnt:params.fromLnt,
-              to:params.to,
-              toCode:params.toCode,
-              toLat:params.toLat,
-              toLnt:params.toLnt,
+        this.setData({
+            from:params.from,
+            fromCode:params.fromCode,
+            fromLat:params.fromLat,
+            fromLnt:params.fromLnt,
+            to:params.to,
+            toCode:params.toCode,
+            toLat:params.toLat,
+            toLnt:params.toLnt,
 
-              startTime:startTime,
-              startTimeDesc:this.parseTime(startTime),
-          });
+            startTime:startTime,
+            startTimeDesc:this.parseTime(startTime),
+        });
 
-          //初始化路线信息
-          await this.initAllRoutes();
+        //初始化路线信息
+        await this.initAllRoutes();
         // TODO:根据经过的城市信息，查下天气网城市码点，查天气情况
         await this.initAllWeather();
       }catch(e){
         wx.showToast({ title: '路径规划失败' })
         console.error(e);
+      }finally{
+        wx.hideLoading();
       }
 
   },

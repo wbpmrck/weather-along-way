@@ -6,3 +6,16 @@
 .hidden {
   visibility: hidden;
 }
+
+.v-middle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.h-middle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}

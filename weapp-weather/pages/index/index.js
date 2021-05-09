@@ -1,11 +1,16 @@
 // index.js
 import {format} from '../../utils/time-util'
+import {cityData,findCityInfo} from '../city/city-data'
+import {callBaiduMapAPI,apis} from '../../libs/baidu-map/webapi-sdk';
+import moment from "../../libs/moment/moment-wrapper"
 // 获取应用实例
 const app = getApp()
 
 Page({
     data: {
         list: [],
+        longitude:0,
+        latitude:0,
         startingPlace: {}, // {province: '',city: '', district: '', code: '',longitude: '',latitude: ''}
         destination: {},// {province: '',city: '', district: '', code: '',longitude: '',latitude: ''}
         date: '',
@@ -19,28 +24,79 @@ Page({
         // return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
         return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
     },
+    async initData(){
+      //根据当前坐标，查询默认出发地点
+      //调用百度地图服务进行地理位置逆解析，得到当前城市名称
+      try{
+        let resp = await callBaiduMapAPI(apis.REVERSE_GEOCODING,{location:`${this.data.latitude},${this.data.longitude}`})
+        
+        console.log('百度地图返回结果：');
+        console.log(resp);
+
+        if(resp && resp.statusCode === 200 && resp.data.status === 0){
+          this.setData({currentLocation: resp.data.result.addressComponent.city})
+
+          let foundCity = findCityInfo(resp.data.result.addressComponent.district);
+          if(foundCity === undefined){
+            foundCity = findCityInfo(resp.data.result.addressComponent.city);
+          }
+          foundCity.longitude = this.data.longitude;
+          foundCity.latitude = this.data.latitude;
+          this.setData({
+            startingPlace:foundCity
+          })
+
+          wx.showToast({ title: '请选择目的地',duration:900 })
+        }else{
+          wx.showToast({ title: '获取定位失败' ,duration:900})
+        }
+      }catch(e){
+        // this.setData('currentLocation', '定位失败')
+        // wx.showToast({ title: '获取失败' })
+        console.error(e);
+      }
+
+      //TODO:设置默认出发时间为当前
+      let date = moment().format("YYYY-MM-DD");
+      let time = moment().format("HH:mm");
+      this.setData({
+        date,
+        time,
+      })
+
+    },
     onLoad() {
-        // 监听页面加载的生命周期函数
-        // wx.request({
-        //     url: 'https://api.weatherdt.com/common/',
-        //     data: {
-        //         area: 101010100,
-        //         type: 'forecast',
-        //         key: 'dc56d448cb406e502dfaeec4db50c340',
-        //     },
-        //     header: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     method: 'POST',
-        //     dataType: 'json',
-        //     responseType: 'text',
-        //     success: res => {
-        //         console.log('request success', res.data)
-        //     },
-        // })
+        wx.getLocation({
+            type: 'gcj02',
+            altitude: true,
+            success: async res => {
+              console.log('获取定位：');
+              console.log(res);
+
+              this.data.latitude = res.latitude;
+              this.data.longitude = res.longitude;
+              this.setData({
+                latitude:res.latitude,
+                longitude:res.longitude,
+              });
+              await this.initData();
+            },
+            fail: err => {
+                wx.showToast({ title: '获取定位失败' })
+                console.error(err);
+            },
+        })
     },
     onShow() {},
     navigateToDetailTwo() {
+
+        //检查参数：
+        if(!this.data.startingPlace.code || !this.data.destination.code || !this.data.date || !this.data.time){
+          
+          wx.showToast({ title: '请选择参数',icon:'error',duration:500 })
+          return;
+        }
+
         wx.navigateTo({
             url: `../detail-two/detail-two?from=${this.stringifyPlace(this.data.startingPlace)}&fromCode=${this.data.startingPlace.code}&fromLat=${this.data.startingPlace.latitude||""}&fromLnt=${this.data.startingPlace.longitude||""}&to=${this.stringifyPlace(this.data.destination)}&toCode=${this.data.destination.code}&toLat=${this.data.destination.latitude||""}&toLnt=${this.data.destination.longitude||""}&date=${this.data.date}&time=${this.data.time}`,
         })

@@ -121,7 +121,7 @@ Page({
               console.log('获取定位：');
               console.log(res);
 
-              //TODO:调用百度地图服务进行地理位置逆解析，得到当前城市名称
+              //调用百度地图服务进行地理位置逆解析，得到当前城市名称
               try{
                 let resp = await callBaiduMapAPI(apis.REVERSE_GEOCODING,{location:`${res.latitude},${res.longitude}`})
                 

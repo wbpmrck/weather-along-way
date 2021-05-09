@@ -3,14 +3,20 @@
   height: 600rpx;
 }
 
+.container {
+  bottom: 0rpx;
+}
+
 .info {
-  margin: 48rpx;
-  padding: 56rpx;
+  width: 580rpx;
+  padding: 36rpx 30rpx 40rpx 30rpx;
   border-radius: 16rpx;
+  opacity: .92;
 }
 
 .picker {
   height: 40rpx;
+  font-size: 34rpx;
 }
 
 .label-destination {
@@ -19,27 +25,45 @@
   margin: 16rpx 0;
 }
 
+.target-address {
+  margin-bottom: 20rpx;
+}
+
 .value-destination {
-  font-size: 48rpx;
-  margin: 16rpx 0;
+  font-size: 38rpx;
+}
+
+.start-form-item {
+  width: 380rpx;
+}
+
+.form-item {
+  display: inline-block;
 }
 
 .input-label {
   margin: 40rpx 0 10rpx;
   font-weight: 200;
-  font-size: 40rpx;
-}
-
-.input-value {
-  height: 40rpx;
-  border-bottom: 1rpx solid;
-  padding-bottom: 12rpx;
   font-size: 36rpx;
 }
 
+.input-value {
+  height: 48rpx;
+  padding-bottom: 12rpx;
+  font-size: 32rpx;
+  white-space: nowrap;
+}
+
 .custom-button {
+  display: inline-block;
+  margin: 20rpx 0 20rpx 0;
   border-radius: 48rpx;
-  margin: 48rpx;
+  width: 100%;
+  font-size: 38rpx;
+  line-height: 68rpx;
+  height: 68rpx;
+  font-weight: bold;
+  text-align: center;
 }
 
 .custom-button::after {
@@ -89,10 +113,15 @@
 
 .picker-date {
   display: inline-block;
-  width: 45%;
+  width: 42%;
 }
 
 .picker-time {
   display: inline-block;
-  width: 45%;
+  width: 25%;
+}
+
+/* 搜索历史记录区域 */
+.search-log {
+  min-height: 300rpx;
 }
