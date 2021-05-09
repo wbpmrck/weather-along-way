@@ -19,6 +19,7 @@ Page({
     arriveTimeDayOrNight:"d",
     arriveTimeMinTemp:"23",
     arriveTimeMaxTemp:"30",
+    arriveTimeTemp:"",
     notGoodLastTime:0,
     notGoodLastTimeDesc:"",
 
@@ -46,25 +47,43 @@ Page({
       let maxTemp = -99;
       let weatherCount = {};
       let weatherCode = undefined;
+      let arriveTimeTemp = undefined; //到达时的天气情况，先尝试从1小时信息获取
 
-      oneHourData.forEach( (hourData,idx)=>{
-        let {temp,time,weather} = hourData;
-        temp = parseInt(temp);
+      let arriveTimeString = moment(marker.arriveTime).format("YYYYMMDDHHmmss");
+      let now = moment();
+      for(let i=0;i<oneHourData.length;i++){
+          let hourData = oneHourData[i];
+          let {temp,time,weather} = hourData;
 
-        if(temp < minTemp)
-          minTemp = temp;
+          // 计算到达时天气
+          let timeEnd = moment(time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+          if(arriveTimeString >= time && arriveTimeString <= timeEnd){
+            console.log(`找到时间段，设定marker:${marker.city}的温度=${temp}`)
+            arriveTimeTemp = temp;
+          }
 
-        if(temp > maxTemp)
-          maxTemp = temp;
+          // 如果超过当天则不计算温度
+          time = moment(time,"YYYYMMDDHHmmss");
+          if(time.dayOfYear() > now.dayOfYear()){
+            console.log(`time.dayOfYear() = ${time.dayOfYear()},not count temp!`);
+          }else{
 
-        if(weatherCount.hasOwnProperty(weather)){
-          weatherCount[weather] ++;
-        }else{
-          weatherCount[weather] = 1;
-        }
+            temp = parseInt(temp);
+  
+            if(temp < minTemp)
+              minTemp = temp;
+  
+            if(temp > maxTemp)
+              maxTemp = temp;
+  
+            if(weatherCount.hasOwnProperty(weather)){
+              weatherCount[weather] ++;
+            }else{
+              weatherCount[weather] = 1;
+            }
 
-        // TODO:如果超过当天，跳出计算
-      });
+          }
+      }
 
       let max = 0;
       for(let k in weatherCount){
@@ -88,6 +107,12 @@ Page({
       let weatherWhenArrive = marker.weatherWhenArrive;
       let arriveTimeMinTemp = weatherWhenArrive.minTemp;
       let arriveTimeMaxTemp = weatherWhenArrive.maxTemp;
+
+      //如果1小时天气信息不包含到达时刻的天气，则取12小时预告的上下限均值
+      if(arriveTimeTemp === undefined){
+        arriveTimeTemp = Math.floor( (arriveTimeMinTemp = arriveTimeMaxTemp)/2)
+      }
+
       let arriveTimeWeatherCode = weatherWhenArrive.weather;
 
       let notGoodLastTime = 0;
@@ -151,6 +176,7 @@ Page({
         arriveTimeWeatherCode,
         arriveTimeDayOrNight,
         arriveTimeMinTemp,
+        arriveTimeTemp,
         arriveTimeMaxTemp,
         notGoodLastTime,
         notGoodLastTimeDesc:notGoodLastTime===0?"":notGoodLastTime.toString()+"小时",

@@ -18,7 +18,7 @@
       <view class="label">到达时天气</view>
       <view class="content">
         <image mode="aspectFit" src="../../resource/image/city/{{arriveTimeDayOrNight}}{{arriveTimeWeatherCode}}.png"></image>
-        <view class="temp">{{arriveTimeMinTemp}}℃</view>
+        <view class="temp">{{arriveTimeTemp}}℃</view>
       </view>
     </view>
     <view class="not-good-region {{notGoodLastTime === 0?'hidden':''}}">

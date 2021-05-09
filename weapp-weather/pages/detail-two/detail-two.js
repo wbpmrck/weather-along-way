@@ -316,6 +316,17 @@ Page({
         routeMetaData.notGood = notGood;
         routeMetaData.alarmCount = alarmCount;
 
+        //更新天气说明
+        let weatherDesc = "";
+        if(routeMetaData.alarmCount >0){
+            weatherDesc = "有预警天气"
+        }else if(routeMetaData.notGood >0){
+            weatherDesc = "有不利天气"
+        }else{
+            weatherDesc = "天气不错"
+        }
+
+        routeMetaData.weatherDesc = weatherDesc;
 
         return routeMetaData;
     },
