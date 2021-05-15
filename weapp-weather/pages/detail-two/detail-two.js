@@ -97,14 +97,16 @@ Page({
 
         let markers = routeMetaData.markers;
         let beginCity = findCityByCode(this.data.fromCode);
-        markers[0].callout.content = this.data.from;
+        // markers[0].callout.content = this.data.from;
+        markers[0].callout.content = "(起点)";
         markers[0].adcode = this.data.fromCode;
         markers[0].province =beginCity.province;
         markers[0].city =beginCity.city;
         markers[0].district =beginCity.district;
 
         let endCity = findCityByCode(this.data.toCode);
-        markers[markers.length-1].callout.content = this.data.to;
+        // markers[markers.length-1].callout.content = this.data.to;
+        markers[markers.length-1].callout.content = "(终点)";
         markers[markers.length-1].adcode = this.data.toCode;
         markers[markers.length-1].province =endCity.province;
         markers[markers.length-1].city =endCity.city;
@@ -130,7 +132,7 @@ Page({
                         console.log(`NOT found ${resp.data.result.addressComponent.district},use ${resp.data.result.addressComponent.city} instead!`);
                         foundCity = findCityInfo(resp.data.result.addressComponent.city);
                         if(foundCity){
-                            markers[idx+1].callout.content =foundCity.city; //只找到城市，则显示城市
+                            // markers[idx+1].callout.content =foundCity.city; //只找到城市，则显示城市
                             markers[idx+1].adcode =foundCity.code;
                             markers[idx+1].province =foundCity.province;
                             markers[idx+1].city =foundCity.city;
@@ -141,7 +143,7 @@ Page({
 
                         }
                     }else{
-                        markers[idx+1].callout.content =foundCity.city+'-'+foundCity.district; //找到区县，则显示区县
+                        // markers[idx+1].callout.content =foundCity.city+'-'+foundCity.district; //找到区县，则显示区县
                         markers[idx+1].adcode =foundCity.code;
                         markers[idx+1].province =foundCity.province;
                         markers[idx+1].city =foundCity.city;
@@ -159,7 +161,8 @@ Page({
               if(idx === 0 || idx === routeMetaData.markers.length-1){
                   return NOT_DEAL_ME;
               }else{
-                return item.callout.content
+                // return item.callout.content
+                return `${item.province}${item.city}${item.district}`
               }
           });
           removeItem(routeMetaData.markers,(item,idx)=>{
@@ -279,7 +282,8 @@ Page({
                                     //更新他的图标信息
                                     let hour = m.arriveTime.getHours();
                                     m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${weather}.png`;
-                                    m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[weather]})` 
+                                    // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[weather]})` 
+                                    m.callout.content += `${weatherCodes.weather[weather]}` 
                                     break;
                                 }
                       
@@ -303,7 +307,8 @@ Page({
                                         //更新他的图标信息
                                         let hour = m.arriveTime.getHours();
                                         m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
-                                        m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
+                                        // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
+                                        m.callout.content += `${weatherCodes.weather[record.weather]}` 
                                         break;
                                     }
                                 }
@@ -336,8 +341,9 @@ Page({
                 if(isNotGood(weatherWhenArrive.weather,weatherWhenArrive.windPower)){
                     console.log(`marker:${marker.id} has bad weather!`)
                     marker.notGoodWhenArrive = true; //标记不利天气
-                    marker.callout.borderColor="#ff2e2a";
-                    marker.callout.borderWidth=4;
+                    // marker.callout.borderColor="#ff2e2a";
+                    marker.callout.bgColor=  '#ff2e2a',
+                    // marker.callout.borderWidth=4;
                     notGood++;
                 }
             }else{
@@ -375,7 +381,7 @@ Page({
      * @param {*} routeData 
      * @param {*} gutterDistance : 间隔多少公里进行城市采点
      */
-    genRouteData2: function(routeData,gutterDistance){
+    genRouteData: function(routeData,gutterDistance){
         const { distance, duration, steps,origin, destination, routes } = routeData;
 
         console.log(`获取到路程时长:${duration}秒`)
@@ -434,7 +440,8 @@ Page({
                         iconPath: '../../resource/image/marker.png',
                         callout: {
                             display: 'ALWAYS',
-                            content: `marker:${markers.length}`,
+                            content: "",
+                            // content: `marker:${markers.length}`,
                             color: '#fff',
                             fontSize: '14',
                             borderRadius: 2,
@@ -483,20 +490,20 @@ Page({
 
 
 
-        markers[0].callout.content+='(出发)';
-        markers[0].callout.color='#F00';
+        markers[0].callout.content+='(起点)';
+        // markers[0].callout.color='#F00';
         markers[0].callout.fontSize= '16';
         markers[0].callout.borderRadius= 10;
-        markers[0].callout.bgColor= '#0F0';
+        // markers[0].callout.bgColor= '#0F0';
         markers[0].callout.padding= 2;
         markers[0].callout.zIndex= 9999;
 
         //最后一个终止点，样式修改
-        markers[markers.length-1].callout.content+='(到达)';
-        markers[markers.length-1].callout.color='#F00';
+        markers[markers.length-1].callout.content+='(终点)';
+        // markers[markers.length-1].callout.color='#F00';
         markers[markers.length-1].callout.fontSize= '16';
         markers[markers.length-1].callout.borderRadius= 10;
-        markers[markers.length-1].callout.bgColor= '#0F0';
+        // markers[markers.length-1].callout.bgColor= '#0F0';
         markers[markers.length-1].callout.padding= 2;
         markers[markers.length-1].callout.zIndex= 9999;
 
@@ -535,138 +542,6 @@ Page({
         return routeMetaData;
     },
 
-    //根据传入的导航路径数据，绘制地图信息
-    // genRouteData:function(routeData){
-    //     const { distance, duration, steps,origin, destination, routes } = routeData;
-
-    //     console.log(`获取到路程时长:${duration}秒`)
-    //     console.log(`获取到路程:${distance}米`)
-
-    //     let newPath = [];
-    //     let markers =[];
-    //     let passedAdcodes ={}; //保存经过的城市编码:城市名称
-    //     let cityMakers ={};//name:true
-
-    //     /*
-    //         1.step.adcodes:路径步骤经过的行政区划，这个用来确定途径的城市（需要去重复）
-    //         2.step.path:详细路径点阵，这个用来绘制路线
-    //     */
-    //     steps && steps.forEach((step, index) => {
-    //        let {adcodes,path,start_location} = step;
-    //        let beginCity ="";
-    //        //处理adcodes
-    //        adcodes.split(";").forEach(adcode =>{
-    //             adcode = adcode.substr(0,4);
-    //             if(!passedAdcodes.hasOwnProperty(adcode)){
-    //                 passedAdcodes[adcode] = findCity(adcode);
-    //                 //console.log(`1 city name:${passedAdcodes[adcode]},adcode:${adcode}`)
-    //             }
-    //             if(!beginCity){
-    //                 beginCity=passedAdcodes[adcode];
-    //                 //console.log(`2 city name:${beginCity},adcode:${adcode}`)
-    //             }
-    //        });
-
-    //        //将路径起始点加入marker
-    //        let startMarker =  {
-    //             markerId: this.data.markerIdSeed++,
-    //             // anchor:{
-    //             //     x:0.5,
-    //             //     y:0.5,
-    //             // },
-    //             latitude: start_location.lat,
-    //             longitude:start_location.lng,
-    //             // title: 'markerId: 1',
-    //             zIndex: 100,
-    //             iconPath: '../../resource/image/marker.png',
-    //             // rotate: 90,
-    //             callout: {
-    //                 display: 'ALWAYS',
-    //                 content: beginCity,
-    //                 color: '#000',
-    //                 fontSize: '14',
-    //                 borderRadius: 2,
-    //                 bgColor: '#5B9FFF',
-    //                 // padding: 1,
-    //                 textAlign: 'center'
-    //             }
-    //         };
-            
-    //         //如果该城市之前没有标识过，就标识一下
-    //         if(!cityMakers[beginCity]){
-    //             markers.push(startMarker);
-    //             cityMakers[beginCity] = true;
-    //         }
-
-
-    //        //处理path
-    //        let segmentPath = {
-    //            points:[],
-    //            width:3,
-    //            arrowLine:true,
-    //            color:"#2facff",
-    //        };
-    //        path.split(";").forEach(points =>{
-    //             points = points.split(",");
-    //             segmentPath.points.push({
-    //                 latitude: points[1], 
-    //                 longitude: points[0]
-    //             });
-    //        });
-
-    //        newPath.push(segmentPath);
-            
-    //     });
-
-    //     markers[0].callout.content+='(出发)';
-    //     markers[0].callout.color='#F00';
-    //     markers[0].callout.fontSize= '16';
-    //     markers[0].callout.borderRadius= 10;
-    //     markers[0].callout.bgColor= '#0F0';
-    //     markers[0].callout.padding= 2;
-    //     markers[0].callout.zIndex= 9999;
-
-    //     //调整最后一个marker：位置改为最后一个终止点，样式修改
-    //     let lastPath = newPath[newPath.length-1].points;
-    //     markers[markers.length-1].callout.content+='(到达)';
-    //     markers[markers.length-1].latitude = parseFloat(lastPath[lastPath.length-1].latitude);
-    //     markers[markers.length-1].longitude = parseFloat(lastPath[lastPath.length-1].longitude);
-    //     markers[markers.length-1].callout.color='#F00';
-    //     markers[markers.length-1].callout.fontSize= '16';
-    //     markers[markers.length-1].callout.borderRadius= 10;
-    //     markers[markers.length-1].callout.bgColor= '#0F0';
-    //     markers[markers.length-1].callout.padding= 2;
-    //     markers[markers.length-1].callout.zIndex= 9999;
-
-    //     //根据开始结束点，重设地图的中心点和缩放
-    //     // let mapCenter = {
-    //     //     latitude: (markers[0].latitude + markers[markers.length-1].latitude)/2,
-    //     //     longitude: (markers[0].longitude + markers[markers.length-1].longitude)/2,
-    //     //   };
-    //       let mapCenter = {
-    //         latitude: markers[0].latitude,
-    //         longitude: markers[0].longitude
-    //       };
-
-    //     let scale = 8;//TODO:动态计算
-    //     let endTime = new Date(+this.data.startTime + (duration*1000));
-        
-    //     let routeMetaData = {
-    //         routeName:"",
-    //         weatherDesc:"天气不错/有预警天气/有不利天气",
-    //         distance,//距离（米）
-    //         distanceDesc:this.parseDistance(distance),
-    //         duration,//时长（秒）
-    //         durationDesc:this.parseDuration(duration),
-    //         endTime,
-    //         endTimeDesc:this.parseTime(endTime),
-    //         scale,
-    //         markers,
-    //         mapCenter,
-    //         polyline:newPath
-    //     }
-    //     return routeMetaData;
-    // },
     /**
      * 根据传入的地址描述获取对应的位置信息
      * @param {String} address 
@@ -727,7 +602,7 @@ Page({
             let routeMetaDataResArray =[];
             queryRouteResArray.forEach(res =>{
                 if(res){
-                    routeMetaDataResArray.push(this.fullfillRouteInfo(this.genRouteData2(res,kmForGutter)))
+                    routeMetaDataResArray.push(this.fullfillRouteInfo(this.genRouteData(res,kmForGutter)))
                 }
             })
 

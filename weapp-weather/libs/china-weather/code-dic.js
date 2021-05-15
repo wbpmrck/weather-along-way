@@ -45,7 +45,7 @@ const weather = {
   "302":"雪",
 }
 function isNotGood(weatherCode,windPower){
-  if(weatherCode > "01" || windPower > "5"){
+  if(weatherCode > "02" || windPower > "5"){
     return true;
   }else{
     return false;
