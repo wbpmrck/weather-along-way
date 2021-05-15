@@ -4,13 +4,10 @@ process.on('uncaughtException', err => {
   console.error('有一个未捕获的错误', err)
   process.exit(1) //强制性的（根据 Node.js 文档）
 })
-// Or var xlsx = require('node-xlsx').default;
 
 let citys = {};
-// Parse a file
 const workSheetsFromFile = xlsx.parse(`${__dirname}/city-file/国内城市站号.xls`);
 
-// console.log(workSheetsFromFile);
 let data = workSheetsFromFile[0].data;
 data.splice(0,1);//去掉表格行首
 
@@ -38,11 +35,6 @@ data.forEach((row,idx) =>{
     console.error(`${provinceCName},${cityCName},${districtCName},index;${idx} 已经出现过！`)
   }
 })
-
-setInterval(()=>{
-  console.log('running...')
-},1000);
-
 
 const content = 'let cityData = ' + JSON.stringify(citys);
 
