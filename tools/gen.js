@@ -21,6 +21,10 @@ data.forEach((row,idx) =>{
   }
   let provinceObj = citys[provinceCName];
 
+  //处理直辖市
+  if(provinceCName == "北京" ||provinceCName == "上海" ||provinceCName == "重庆" ||provinceCName == "天津"  ){
+    cityCName = provinceCName;
+  }
   if(!provinceObj[cityCName]){
     provinceObj[cityCName]={};
   }

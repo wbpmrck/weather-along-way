@@ -8,20 +8,29 @@
   <view class="container h-middle">
     <view class="bg-gradient info">
       <view class="bottom-divide">
-        <view class="input-label">目的地：</view>
-        <view class="input-value target-address" bindtap="chooseStartingPlace" data-type="d">
-          <!-- <text class="value-destination" wx-if="{{destination.province}}">{{destination.province }}省-</text> -->
-          <text class="value-destination" wx-if="{{destination.city}}">{{destination.city}}市</text>
-          <text class="value-destination" wx-if="{{destination.district}}">-{{destination.district}}区</text>
-        </view>
+
+        <picker mode="multiSelector" data-t="destination" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{range}}">
+          <view class="input-label">目的地：</view>
+          <!-- <view class="input-value target-address" bindtap="chooseStartingPlace" data-type="d"> -->
+          <view class="input-value target-address" data-type="d">
+            <!-- <text class="value-destination" wx-if="{{destination.province}}">{{destination.province }}省-</text> -->
+            <text class="value-destination" wx-if="{{destination.city}}">{{destination.city}}市</text>
+            <text class="value-destination" wx-if="{{destination.district}}">-{{destination.district}}区</text>
+          </view>
+        </picker>
+       
       </view>
       <view class="bottom-divide">
-        <view class="input-label form-item">出发地：</view>
-        <view class="input-value start-form-item form-item" bindtap="chooseStartingPlace" data-type="s">
-          <!-- <text wx-if="{{startingPlace.province}}">{{startingPlace.province }}省-</text> -->
-          <text wx-if="{{startingPlace.city}}">{{startingPlace.city}}市</text>
-          <text wx-if="{{startingPlace.district}}">-{{startingPlace.district}}区</text>
-        </view>
+        <picker mode="multiSelector" data-t="startplace" bindchange="bindMultiPickerChange2" bindcolumnchange="bindMultiPickerColumnChange2" value="{{multiIndex2}}" range="{{range2}}">
+          <view class="input-label form-item">出发地：</view>
+          <!-- <view class="input-value start-form-item form-item" bindtap="chooseStartingPlace" data-type="s"> -->
+          <view class="input-value start-form-item form-item" data-type="s">
+            <!-- <text wx-if="{{startingPlace.province}}">{{startingPlace.province }}省-</text> -->
+            <text wx-if="{{startingPlace.city}}">{{startingPlace.city}}市</text>
+            <text wx-if="{{startingPlace.district}}">-{{startingPlace.district}}区</text>
+          </view>
+        </picker>
+
       </view>
       <view class="bottom-divide">
         <view class="input-label  form-item">出发时间：</view>

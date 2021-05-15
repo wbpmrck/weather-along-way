@@ -52,6 +52,7 @@ function callWeatherAPi(apiOption,inputData){
             // console.log('set cache for '+cacheKey)
             setCacheData(cacheKey,res,cacheTime);
           }
+          res._reqData = inputData;
           resolve(res);
         }else{
           reject({

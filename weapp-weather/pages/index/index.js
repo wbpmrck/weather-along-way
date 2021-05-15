@@ -12,6 +12,13 @@ const app = getApp()
 
 Page({
     data: {
+
+      range: [[], [], []],
+      multiIndex: [0, 0, 0],
+
+      range2: [[], [], []],
+      multiIndex2: [0, 0, 0],
+
         markers:[],
         history:[],
         key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
@@ -111,6 +118,9 @@ Page({
 
     },
     onLoad() {
+
+      this.setProvinceList();
+      this.setProvinceList2();
         wx.getLocation({
             type: 'gcj02',
             altitude: true,
@@ -200,4 +210,204 @@ Page({
         //     url: '../calendar/calendar',
         // })
     },
+
+
+    setProvinceList() {
+      console.log('setProvinceList')
+        const provinceList = Object.keys(cityData);
+        this.setData({
+          "range[0]": provinceList,
+        });
+        // this.data.currentSelect.province = provinceList[0];
+        this.setCityList();
+    },
+    setProvinceList2() {
+      console.log('setProvinceList2')
+        const provinceList = Object.keys(cityData);
+        this.setData({
+          "range2[0]": provinceList,
+        });
+        // this.data.currentSelect2.province = provinceList[0];
+        this.setCityList2();
+    },
+    // setCityList(provinceName){
+    setCityList(){
+      let provinceName = this.data.range[0][this.data.multiIndex[0]];
+      console.log(`setCityList:${provinceName}`)
+      const cityList = Object.keys(cityData[provinceName]);
+      this.setData({
+        "range[1]": cityList,
+      });
+      // this.data.currentSelect.city = cityList[0];
+      this.setRegionList();
+    },
+    setCityList2(){
+      let provinceName = this.data.range2[0][this.data.multiIndex2[0]];
+      console.log(`setCityList2:${provinceName}`)
+      const cityList = Object.keys(cityData[provinceName]);
+      this.setData({
+        "range2[1]": cityList,
+        // "multiIndex2[1]": 0,
+      });
+      // this.data.currentSelect2.city = cityList[0];
+      this.setRegionList2();
+    },
+    // setRegionList(provinceName,cityName){
+    setRegionList(){
+      let provinceName = this.data.range[0][this.data.multiIndex[0]];
+      let cityName = this.data.range[1][this.data.multiIndex[1]];
+      console.log(`setRegionList:${provinceName},${cityName}`)
+      const regionList = Object.keys(cityData[provinceName][cityName]);
+      // this.data.currentSelect.district = regionList[0];
+      this.setData({
+        "range[2]": regionList,
+      });
+    },
+
+    setRegionList2(){
+      let provinceName = this.data.range2[0][this.data.multiIndex2[0]];
+      let cityName = this.data.range2[1][this.data.multiIndex2[1]];
+      console.log(`setRegionList2:${provinceName},${cityName}`)
+      const regionList = Object.keys(cityData[provinceName][cityName]);
+      // this.data.currentSelect2.district = regionList[0];
+      this.setData({
+        "range2[2]": regionList,
+        // "multiIndex2[2]": 0,
+      });
+    },
+
+
+    setChosenDestination:function(){
+      console.log('setChosenDestination')
+      let [provinceIndex,cityIndex,regionIndex] = this.data.multiIndex;
+      let province = this.data.range[0][provinceIndex];
+      let city = this.data.range[1][cityIndex];
+      let district = this.data.range[2][regionIndex];
+      console.log(province)
+      console.log(city)
+      console.log(district)
+      // console.log(district)
+      let code = cityData[province][city][district].AREAID;
+  
+      this.setData({
+        destination:{
+          province: province,
+          city: city,
+          district: district,
+          code: code,
+        }
+      })
+    },
+    setChosenStartingPlace:function(){
+    console.log('setChosenStartingPlace')
+    let [provinceIndex,cityIndex,regionIndex] = this.data.multiIndex2;
+    let province = this.data.range2[0][provinceIndex];
+    let city = this.data.range2[1][cityIndex];
+    let district = this.data.range2[2][regionIndex];
+    console.log(province)
+    console.log(city)
+    console.log(district)
+    // console.log(district)
+    let code = cityData[province][city][district].AREAID;
+
+    this.setData({
+      startingPlace:{
+        province: province,
+        city: city,
+        district: district,
+        code: code,
+      }
+    })
+  },
+
+  bindMultiPickerChange: function (e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+    this.setData({multiIndex:e.detail.value});
+    //根据确定的选项刷新选择的值
+    // let t = e.target.dataset.t;
+    // if(t === 'destination'){
+      this.setChosenDestination();
+    // }else{
+      // this.setChosenStartingPlace();
+    // }
+    
+  },
+  bindMultiPickerColumnChange: function (e) {
+    console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+    let k = `multiIndex[${e.detail.column}]`;
+    this.setData({
+        [k]: e.detail.value,
+    })
+    if(e.detail.column === 0){
+      //更新城市列表
+      console.log('更新城市列表')
+      // const province = this.data.range[0][e.detail.value]
+      // this.data.currentSelect.province = province;
+      this.setCityList();
+      // this.setCityList(province);
+    }else if(e.detail.column === 1){
+      //更新地区列表
+      console.log('更新地区列表')
+      const city = this.data.range[1][e.detail.value]
+      // this.data.currentSelect.city = city;
+      this.setRegionList();
+      // this.setRegionList(this.data.currentSelect.province,city);
+    }else if(e.detail.column === 2){
+    }
+  },
+  bindMultiPickerChange2: function (e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+    this.setData({multiIndex2:e.detail.value});
+  
+    this.setChosenStartingPlace();
+  },
+
+  bindMultiPickerColumnChange2: function (e) {
+    console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+    let k = `multiIndex2[${e.detail.column}]`;
+    this.setData({
+        [k]: e.detail.value,
+    })
+    if(e.detail.column === 0){
+      //更新城市列表
+      console.log('更新城市列表')
+      this.setCityList2();
+    }else if(e.detail.column === 1){
+      //更新地区列表
+      console.log('更新地区列表')
+      this.setRegionList2();
+    }else if(e.detail.column === 2){
+    }
+  },
+
+  // bindMultiPickerColumnChange2: function (e) {
+  //   console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+  //   if(e.detail.column === 0){
+  //     //更新城市列表
+  //     console.log('更新城市列表')
+  //     const province = this.data.range2[0][e.detail.value]
+  //     this.data.currentSelect2.province = province;
+  //     this.setCityList2(province);
+  //   }else if(e.detail.column === 1){
+  //     //更新地区列表
+  //     console.log('更新地区列表')
+  //     const city = this.data.range2[1][e.detail.value]
+  //     this.data.currentSelect2.city = city;
+  //     this.setRegionList2(this.data.currentSelect2.province,city);
+  //   }else if(e.detail.column === 2){
+  //     // const province = this.data.destination.province
+  //     // const city = this.data.destination.city
+  //     // const districtObj = cityData[province][city]
+
+  //     // console.log(province)
+  //     // console.log(city)
+  //     // console.log(districtObj)
+
+  //     // const districtList = Object.keys(districtObj)
+  //     // const district = districtList[e.detail.value]
+  //     // this.data.destination.district = district
+  //     // this.data.destination.code = districtObj[district]['AREAID']
+  //   }
+  // },
+
 })
