@@ -4,6 +4,7 @@ import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood}
 import moment from "../../libs/moment/moment-wrapper"
 Page({
   data: {
+    key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
     currentProvince:"xx省",
     currentCity:"邯郸市",
     currentDistrict:"雁塔区",

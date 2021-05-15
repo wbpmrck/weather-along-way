@@ -12,6 +12,7 @@
   padding: 36rpx 30rpx 40rpx 30rpx;
   border-radius: 16rpx;
   opacity: .92;
+  margin-bottom: 60rpx;
 }
 
 .picker {
@@ -60,8 +61,8 @@
   border-radius: 48rpx;
   width: 100%;
   font-size: 38rpx;
-  line-height: 68rpx;
-  height: 68rpx;
+  line-height: 78rpx;
+  height: 78rpx;
   font-weight: bold;
   text-align: center;
 }

@@ -8,6 +8,7 @@ import {kmForGutter} from "../../configs/index"
 import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
 Page({
   data: {
+    key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
       //起始和结束地点信息
       from:"",
       fromCode:"",

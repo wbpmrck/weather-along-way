@@ -14,6 +14,7 @@ Page({
     data: {
         markers:[],
         history:[],
+        key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
         scale:7,
         longitude:0,
         latitude:0,

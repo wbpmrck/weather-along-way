@@ -30,7 +30,11 @@
       </button>
     </View> -->
   </View>
-  <map class="map" show-compass="{{true}}" show-scale="{{true}}" scale="{{scale}}" polyline="{{polyline}}" longitude="{{mapCenter.longitude}}" latitude="{{mapCenter.latitude}}" markers="{{markers}}" bindmarkertap="onMarkertap" bindcallouttap="onCallouttap"></map>
+  <map class="map" show-compass="{{true}}" 
+  subkey="{{key}}"
+  layer-style="1"
+  enable-building="true"
+  show-scale="{{true}}" scale="{{scale}}" polyline="{{polyline}}" longitude="{{mapCenter.longitude}}" latitude="{{mapCenter.latitude}}" markers="{{markers}}" bindmarkertap="onMarkertap" bindcallouttap="onCallouttap"></map>
   <View class="arrange">出发：{{startTimeDesc}} —— 到达：{{endTimeDesc}}</View>
   <View class="weather-stat">
     <View wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" wx:key="routeName" class="{{currentSelect===idx?'bg-gradient':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute">
