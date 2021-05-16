@@ -106,6 +106,9 @@
   width: 100%;
   z-index: 1;
   bottom: 0;
-  height: 140rpx;
+  background-color: #fff;
+  color: #000;
+  line-height: 120rpx;
+  height: 120rpx;
   text-align: center;
 }

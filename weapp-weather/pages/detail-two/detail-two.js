@@ -4,6 +4,7 @@ import {callBaiduMapAPI,apis} from "../../libs/baidu-map/webapi-sdk"
 import {request} from "../../libs/wechat-helper/wx-request-helper"
 import moment from "../../libs/moment/moment-wrapper"
 import {removeDump,removeItem,NOT_DEAL_ME} from "../../utils/array-util"
+import {getDayPrefix} from "../../utils/time-util"
 import {kmForGutter} from "../../configs/index"
 import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
 Page({
@@ -43,7 +44,8 @@ Page({
       currentSelect:0,
   },
     parseTime(time){
-        let timeDesc = moment(time).calendar();
+        // let timeDesc = moment(time).calendar();
+        let timeDesc = `${getDayPrefix(time,"MM月dd日")}${moment(time).format('H:mm')}`;
         return timeDesc;
     },
     parseDuration(duration){

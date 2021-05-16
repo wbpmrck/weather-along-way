@@ -1,5 +1,6 @@
 
 import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
+import {getDayPrefix} from "../../utils/time-util"
 
 import moment from "../../libs/moment/moment-wrapper"
 Page({
@@ -31,6 +32,12 @@ Page({
     currentRouteData:undefined
   },
 
+
+  parseTime(time){
+    // let timeDesc = moment(time).calendar();
+    let timeDesc = `${getDayPrefix(time,"MM月dd日")}${moment(time).format('H:mm')}`;
+    return timeDesc;
+},
   // 根据markerId找到对应的城市信息，进行相关计算，并设置data进行展示
   grabMarkerData(markerId,currentRouteData){
     let markers = currentRouteData.markers.filter(m => m.id == markerId);
@@ -101,8 +108,10 @@ Page({
       // 到达时间设置
       let arriveTime = marker.arriveTime;
       let startTime = currentRouteData.startTime;
-      let startTimeDesc = moment(startTime).calendar();
-      let arriveTimeDesc = moment(arriveTime).calendar();
+      // let startTimeDesc = moment(startTime).calendar();
+      let startTimeDesc = this.parseTime(startTime);
+      // let arriveTimeDesc = moment(arriveTime).calendar();
+      let arriveTimeDesc = this.parseTime(arriveTime);
 
       // 到达时天气设置
       let weatherWhenArrive = marker.weatherWhenArrive;
