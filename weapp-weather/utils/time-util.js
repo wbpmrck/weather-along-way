@@ -27,7 +27,7 @@ exports.newDate = function (year, month, day, hour, minute, seconds, ms) {
   return d;
 }
 
-exports.format = function format(date,fmt) { //author: meizz
+function format(date,fmt) { //author: meizz
   var o = {
       "M+": date.getMonth() + 1, //月份
       "d+": date.getDate(), //日
@@ -48,6 +48,7 @@ exports.format = function format(date,fmt) { //author: meizz
       if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
 }
+exports.format = format;
 
 /**
  * 获取这个日期当天剩余秒数
@@ -103,7 +104,7 @@ function getDayPrefix(dateTime,dayFormat){
   }else if(distanceStartWithTomorrow < 48 * 3600){
     return "后天"
   }else{
-    return this.format(dateTime,dayFormat)
+    return format(dateTime,dayFormat)
   }
 }
 exports.getDayPrefix = getDayPrefix;

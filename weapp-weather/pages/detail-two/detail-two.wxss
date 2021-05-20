@@ -1,10 +1,19 @@
-.weather-summary {}
+.weather-summary {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  width: 100%;
+  background-color: #fff;
+  padding-top: 20rpx;
+  padding-bottom: 10rpx;
+}
 
 .weather-summary .summary-item {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  margin-top: 10rpx;
+  margin-top: 22rpx;
+  margin-bottom: 22rpx;
 }
 
 .fix-width-1 {
@@ -26,8 +35,13 @@
 }
 
 .custom-button {
+  display: inline-block;
   border-radius: 48rpx;
   margin: 0 0 0 0;
+  width: 188rpx;
+  height: 58rpx;
+  line-height: 58rpx;
+  font-size: 32rpx;
   /* margin: 48rpx; */
 }
 
@@ -37,7 +51,16 @@
 
 .map {
   width: 100%;
-  height: 750rpx;
+  height: 100vh;
+  /* height: 750rpx; */
+}
+
+.bottom-region {
+  position: absolute;
+  z-index: 100;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
 }
 
 .arrange {

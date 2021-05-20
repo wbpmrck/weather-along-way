@@ -285,7 +285,8 @@ Page({
                                     let hour = m.arriveTime.getHours();
                                     m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${weather}.png`;
                                     // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[weather]})` 
-                                    m.callout.content += `${weatherCodes.weather[weather]}` 
+                                    // m.callout.content += `${weatherCodes.weather[weather]}` 
+                                    m.callout = {};
                                     break;
                                 }
                       
@@ -310,7 +311,8 @@ Page({
                                         let hour = m.arriveTime.getHours();
                                         m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
                                         // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
-                                        m.callout.content += `${weatherCodes.weather[record.weather]}` 
+                                        // m.callout.content += `${weatherCodes.weather[record.weather]}` 
+                                        m.callout = {};
                                         break;
                                     }
                                 }
