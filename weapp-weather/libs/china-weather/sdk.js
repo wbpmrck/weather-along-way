@@ -6,11 +6,13 @@ const cacheTime = 3600 * 2; //2个小时的缓存（天气信息没有必要频�
 const key = "dc56d448cb406e502dfaeec4db50c340"; //这里填写你申请的百度地图应用的sk号码
 const apiPrefix = "https://api.weatherdt.com/";
 
+import {  genMockDataForArea } from "./mock";
+
 /* 下面的接口配置，url配置到官方文档的 ?之前的字符接口，也就是queryString部分不需要配置到url里，而是放到param里 */
-//逆向地理解析 接口配置 参考：https://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-geocoding-abroad
 const EVERY_HOUR = {
   url:`common/?`,
   method:"GET",
+  mocker:genMockDataForArea, //如果不注释该字段，则自动使用Mocker获取数据
   params:{
     area:"",
     type:"forecast|observe|alarm"
@@ -29,6 +31,14 @@ function callWeatherAPi(apiOption,inputData){
 
   let cacheKey = "";
   return new Promise((resolve, reject) => {
+    // 如果接口被mock,则直接返回mock数据
+    if(apiOption.mocker){
+      let res = {
+        statusCode: 200 ,
+        data:apiOption.mocker(data)
+      }
+      return resolve(res);
+    }
     //如果开启缓存，则检查缓存
     if(enableCache){
       cacheKey = JSON.stringify(data)+targetUrl;

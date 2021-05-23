@@ -246,8 +246,8 @@ Page({
                     // console.log(`find marker:${m.adcode},compare with:${parsed.adcode}`)
                     return m.adcode == parsed.adcode
                 });
-                console.log('marker:');
-                console.log(marker);
+                // console.log('marker:');
+                // console.log(marker);
 
                 if(marker && marker.length > 0){
                     marker.forEach(m=>{
@@ -272,7 +272,7 @@ Page({
                                 let timeEnd = moment(time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
                                 if(arriveAt >= time && arriveAt <= timeEnd){
                                     found = true;
-                                    console.log(`找1h数据中-marker:${m.id},${m.city}的天气数据`);
+                                    console.log(`找到1h数据中-marker:${m.id},${m.city}的天气数据`);
                                     
                                     m.weatherWhenArrive = {
                                         maxTemp: temp,
@@ -299,7 +299,7 @@ Page({
         
                                     if(record.timeBegin <= arriveAt && arriveAt <= record.timeEnd){
                                         found = true;
-                                        console.log(`marker :${m.id},${marker.adcode}  arriveAt = ${arriveAt},has suit weather`)
+                                        console.log(`marker :${m.id},${marker.adcode}  arriveAt = ${arriveAt},找到12h中对应的天气`)
                                         m.weatherWhenArrive = {
                                             maxTemp: record.maxTemp,
                                             minTemp: record.minTemp,
