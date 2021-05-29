@@ -355,7 +355,8 @@ Page({
             }
 
             if(marker.alarm && marker.alarm.length>0){
-                console.log(`marker:${marker.id} has alarm!`)
+                console.log(`marker:${marker.id} has alarm!`);
+                this.customData.animationQueue.push(marker)
                 alarmCount++;
             }
         });
@@ -435,13 +436,17 @@ Page({
                         distancePassed,//从起点到这个marker经过的距离(米)
                         arriveTime,
                         zIndex: 100,
+                        // zIndex: 0,
                         width:32,
-                        height:32,
+                        height:32,  
+                        //  width:1,
+                        // height:1,
+                        // alpha:0,
                         anchor:{
                             x:0.5,
                             y:1,
                         },
-                        iconPath: '../../resource/image/marker.png',
+                        // iconPath: '../../resource/image/marker.png',
                         callout: {
                             display: 'ALWAYS',
                             content: "",
@@ -452,7 +457,12 @@ Page({
                             bgColor: '#5B9FFF',
                             // padding: 1,
                             textAlign: 'center'
-                        }
+                        },
+                        // customCallout: {
+                        //     anchorY: 0,
+                        //     anchorX: 0,
+                        //     display: 'ALWAYS'
+                        //   },
                     };
 
                     markers.push(theMarker);
@@ -676,8 +686,11 @@ Page({
 
     },
   onLoad: async function (params) {
-      //console.log('detail two load:');
+      console.log('detail two onLoad:');
       console.log(params);
+      this.customData = {
+          animationQueue:[]
+      };
 
       // 监听页面加载的生命周期函数
       try{
@@ -722,8 +735,40 @@ Page({
         console.error(e);
       }finally{
         wx.hideLoading();
+
+        //TODO: 这种方式做marker动画，总是报错找不到Marker。可能是三条路径中的marker在一个时刻只能展示一个导致的
+        // setTimeout(()=>{
+        //     this.customData.animationQueue.forEach(q => {
+        //         this.makeMarkerMove(q,true);
+        //     })
+        // },5000)
       }
 
+  },
+  makeMarkerMove(marker,direction){
+    let destLat = direction? parseFloat(marker.latitude)+0.01 : parseFloat(marker.latitude)-0.01;
+    console.log(`destLat = ${destLat}`);
+    let self = this;
+    this.mapCtx.translateMarker({
+        markerId: marker.id,
+        duration: 1800,
+        destination: {
+          latitude: destLat,
+          longitude: parseFloat(marker.longitude)
+        },
+        animationEnd() {
+        //   console.log('animation end');
+          self.makeMarkerMove(marker,!direction);
+        },
+        complete(res) {
+            console.log(`makeMarkerMove`)
+            console.log(res)
+        }
+      })
+  },
+  onReady: function (e) {
+    console.log('onReady')
+    this.mapCtx = wx.createMapContext('myMap');
   },
   onMarkertap(args){
     console.log(args);

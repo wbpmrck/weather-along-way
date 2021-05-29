@@ -91,3 +91,25 @@
 .stat-item .duration {
   margin: 16rpx 0;
 }
+
+/* 自定义marker */
+
+/* .customCallout .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.customCallout {
+  animation: jump 4s cubic-bezier(.17, 1.82, .47, -0.59);
+  animation-iteration-count: infinite;
+}
+
+@keyframes jump {
+  from {
+    margin-bottpm: 100px;
+  }
+
+  to {
+    margin-bottpm: 0px;
+  }
+} */

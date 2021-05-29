@@ -18,10 +18,23 @@
     </cover-view>
   </cover-view>
   <map class="map" show-compass="{{true}}" 
+  id="myMap"
   subkey="{{key}}"
   layer-style="1"
   enable-building="true"
-  show-scale="{{true}}" scale="{{scale}}" polyline="{{polyline}}" longitude="{{mapCenter.longitude}}" latitude="{{mapCenter.latitude}}" markers="{{markers}}" bindmarkertap="onMarkertap" bindcallouttap="onCallouttap"></map>
+  markers="{{markers}}"
+  show-scale="{{true}}" scale="{{scale}}" polyline="{{polyline}}"
+   longitude="{{mapCenter.longitude}}" latitude="{{mapCenter.latitude}}" 
+   bindmarkertap="onMarkertap" bindcallouttap="onCallouttap">
+   <!-- <cover-view slot="callout">
+    <block wx:for="{{markers}}" wx:key="item.id">
+      <cover-view  class="customCallout" marker-id="{{item.id}}" >
+        <cover-image class="icon" src="{{item.customCallout.iconPath}}"></cover-image>
+       
+      </cover-view>
+    </block>
+  </cover-view> -->
+  </map>
   
   <cover-view class="bottom-region">
     
