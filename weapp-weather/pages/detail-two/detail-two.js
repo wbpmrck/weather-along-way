@@ -10,6 +10,7 @@ import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood}
 Page({
   data: {
     key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
+    routeMode:true, //true 路线模式，  false 详情模式
       //起始和结束地点信息
       from:"",
       fromCode:"",
@@ -42,6 +43,33 @@ Page({
       markers: [],
       allRoutes:[],
       currentSelect:0,
+
+      //下面是详情模式使用的数据
+      currentProvince:"xx省",
+      currentCity:"邯郸市",
+      currentDistrict:"雁塔区",
+  
+      currentAlarms:[
+        // {title:"邯郸市发布结冰橙色预警"},
+        // {title:"邯郸市发布结冰橙色预警"},
+      ],
+
+  
+      startTimeDesc:"今天08:23",
+      arriveTimeDesc:"今天20:33",
+      arriveTimeWeatherCode:"00",
+      arriveTimeDayOrNight:"d",
+      arriveTimeMinTemp:"23",
+      arriveTimeMaxTemp:"30",
+      arriveTimeTemp:"",
+      notGoodLastTime:0,
+      notGoodLastTimeDesc:"",
+  
+      todayWeather:"小雨转大雨",
+      todayMinTemp:"6",
+      todayMaxTemp:"18",
+  
+    //   currentRouteData:undefined
   },
     parseTime(time){
         // let timeDesc = moment(time).calendar();
@@ -74,6 +102,10 @@ Page({
         let idx = evt.currentTarget.dataset.idx;
         //console.log('切换路线:',idx);
         this.showRoute(idx);
+        this.setData({
+            routeMode:true,
+            scale:6,
+        })
     },
 
     // 完善路径的城市信息
@@ -770,23 +802,301 @@ Page({
     console.log('onReady')
     this.mapCtx = wx.createMapContext('myMap');
   },
+
+  createTopDownAnimation(selector,duration,cb){
+      this.animate(selector, [
+        {top:'-120px',ease:'ease-in-out'},
+        {top:0,ease:'ease-in-out'}
+      ], duration, function(){
+        // this.clearAnimation(selector, function () {
+            // console.log(`清除了${selector}上的所有动画属性`);
+            cb && cb();
+        // })
+      }.bind(this));
+    // let ani = wx.createAnimation({
+    //     duration:1200,
+    //     timingFunction:'ease-in-out',
+    //     delay:0,
+    // });
+    // ani.top = 0;
+  },
+  createDownTopAnimation(selector,duration,cb){
+      this.animate(selector, [
+          {top:0,ease:'ease-in-out'},
+          {top:'-120px',ease:'ease-in-out'},
+      ], duration, function(){
+        // this.clearAnimation(selector, function () {
+            // console.log(`清除了${selector}上的所有动画属性`);
+            cb && cb();
+        // })
+      }.bind(this));
+  },
+
+  onTapMap(args){
+    console.log('onTapMap');
+    console.log(args);
+    if(!this.data.routeMode){
+        this.setData({
+            routeMode:true,
+            scale:6,
+        });
+    }
+  },
+
+  onReturn(args){
+    if(!this.data.routeMode){
+      this.setData({
+        routeMode:true,
+        scale:6,
+    });
+    }
+  },
+  onShareRouteClick(){
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
+  },
+  onShareAppMessage(args){
+    return {
+      title:`从[${this.data.from}]到[${this.data.to}]` 
+      // title:`[${moment(this.data.startTime).format("MM月DD日 HH时")}]从[${this.data.from}]到[${this.data.to}]` 
+    }
+  },
+  shareRoute(args){
+    console.log('shareRoute');
+    console.log(args);
+
+    wx.showToast({ title: '分享开发中...',duration:500 })
+  },
+  handleMarkerTap(args){
+    //   if(this.data.routeMode){
+    //     this.createDownTopAnimation(".weather-summary",700,function(){
+    //         console.log('DownTopAnimation end!')
+    //     })
+    //   }else{
+    //     this.createTopDownAnimation(".weather-summary",700,function(){
+    //         console.log('createTopDownAnimation end!')
+    //     })
+    //   }
+
+
+    let markerId = args.detail.markerId;
+    // 从全局数据区获取当前选定的路线详细数据
+    const appInstance = getApp();
+    let currentRouteData = appInstance.globalData.currentRouteData;
+
+    // 获取当前显示的marker
+    // let markerId = parseInt(params.markerId);
+    let marker = this.grabMarkerData(markerId,currentRouteData);
+
+    if(this.data.routeMode){
+        this.setData({
+            routeMode:false,
+            scale:8,
+            mapCenter:{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+            },
+        });
+    }else{
+        this.setData({
+            mapCenter:{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+            },
+        })
+    }
+    // let markerId = args.detail.markerId;
+    // wx.navigateTo({
+    //     url: `../detail-one/detail-one?markerId=${markerId}`,
+    // });
+  },
   onMarkertap(args){
     console.log(args);
-    let markerId = args.detail.markerId;
-    wx.navigateTo({
-        url: `../detail-one/detail-one?markerId=${markerId}`,
-    });
+    this.handleMarkerTap(args);
   },  
   onCallouttap(args){
       console.log(args);
-      let markerId = args.detail.markerId;
-      wx.navigateTo({
-          url: `../detail-one/detail-one?markerId=${markerId}`,
-      });
+      this.handleMarkerTap(args);
+    //   let markerId = args.detail.markerId;
+    //   wx.navigateTo({
+    //       url: `../detail-one/detail-one?markerId=${markerId}`,
+    //   });
   },
   navigateToDetailOne() {
       wx.navigateTo({
           url: '../detail-one/detail-one',
       })
+  },
+
+  // 根据markerId找到对应的城市信息，进行相关计算，并设置data进行展示
+  grabMarkerData(markerId,currentRouteData){
+    let markers = currentRouteData.markers.filter(m => m.id == markerId);
+
+    if(markers && markers.length >0){
+      let marker = markers[0]; 
+
+      console.log(marker);
+
+      // 根据1小时天气数据，计算“当天”的天气情况
+      // 温度范围按照小时预报落在当前范围内的上下限取值
+      // 天气情况，统计当天出现最多的天气编码，进行翻译获取
+      let oneHourData = marker.weather["1h"];
+      let minTemp = 999;
+      let maxTemp = -99;
+      let weatherCount = {};
+      let weatherCode = undefined;
+      let arriveTimeTemp = undefined; //到达时的天气情况，先尝试从1小时信息获取
+
+      let arriveTimeString = moment(marker.arriveTime).format("YYYYMMDDHHmmss");
+      let now = moment();
+      for(let i=0;i<oneHourData.length;i++){
+          let hourData = oneHourData[i];
+          let {temp,time,weather} = hourData;
+
+          // 计算到达时天气
+          let timeEnd = moment(time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+          if(arriveTimeString >= time && arriveTimeString <= timeEnd){
+            console.log(`找到时间段，设定marker:${marker.city}的温度=${temp}`)
+            arriveTimeTemp = temp;
+          }
+
+          // 如果超过当天则不计算温度
+          time = moment(time,"YYYYMMDDHHmmss");
+          if(time.dayOfYear() > now.dayOfYear()){
+            console.log(`time.dayOfYear() = ${time.dayOfYear()},not count temp!`);
+          }else{
+
+            temp = parseInt(temp);
+  
+            if(temp < minTemp)
+              minTemp = temp;
+  
+            if(temp > maxTemp)
+              maxTemp = temp;
+  
+            if(weatherCount.hasOwnProperty(weather)){
+              weatherCount[weather] ++;
+            }else{
+              weatherCount[weather] = 1;
+            }
+
+          }
+      }
+
+      let max = 0;
+      for(let k in weatherCount){
+        if(weatherCount[k] > max){
+          weatherCode = k;
+          max = weatherCount[k];
+        }
+      }
+
+      console.log(`weatherCode = ${weatherCode}`)
+      weatherCode = weatherCodes.weather[weatherCode];
+      console.log(`weatherCodeDesc = ${weatherCode}`)
+
+      // 到达时间设置
+      let arriveTime = marker.arriveTime;
+      let startTime = currentRouteData.startTime;
+      // let startTimeDesc = moment(startTime).calendar();
+      let startTimeDesc = this.parseTime(startTime);
+      // let arriveTimeDesc = moment(arriveTime).calendar();
+      let arriveTimeDesc = this.parseTime(arriveTime);
+
+      // 到达时天气设置
+      let weatherWhenArrive = marker.weatherWhenArrive;
+      let arriveTimeMinTemp = weatherWhenArrive.minTemp;
+      let arriveTimeMaxTemp = weatherWhenArrive.maxTemp;
+
+      //如果1小时天气信息不包含到达时刻的天气，则取12小时预告的上下限均值
+      if(arriveTimeTemp === undefined){
+        arriveTimeTemp = Math.floor( (arriveTimeMinTemp = arriveTimeMaxTemp)/2)
+      }
+
+      let arriveTimeWeatherCode = weatherWhenArrive.weather;
+
+      let notGoodLastTime = 0;
+
+      let hour = arriveTime.getHours();
+      let arriveTimeDayOrNight = (hour<18 && hour >4)?"d":"n";
+      // 计算不利天气持续时间（仅当到达时天气不好才计算）
+      if(marker.notGoodWhenArrive){
+        // console.log('计算不利天气持续时间（仅当到达时天气不好才计算）')
+        let lastStart = moment(arriveTime).format("YYYYMMDDHHmmss");
+        let startCount = false;
+        for(let i=0;i<oneHourData.length;i++){
+          let record = oneHourData[i];
+          record.timeEnd = moment(record.time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+          // console.log(`3 record.timeEnd = ${record.timeEnd}`)
+          // console.log(`startCount = ${startCount}`)
+
+          if(!startCount){
+
+          // console.log(`record.time = ${record.time}`)
+          // console.log(`record.timeEnd = ${record.timeEnd}`)
+          // console.log(`lastStart = ${lastStart}`)
+            // TODO:如果还没开始累计持续时间，就判断是否开始计时
+            if(record.time <= lastStart && lastStart <= record.timeEnd){
+              startCount = true;
+              // console.log(`startCount = ${startCount}`)
+            }
+          }else {
+            // 目前处于计时状态，则寻找下一个天气转折点
+            if(!isNotGood(record.weather,record.windPower)){
+              break
+            }else{
+              notGoodLastTime++;
+              // console.log(`notGoodLastTime = ${notGoodLastTime}`)
+            }
+
+          }
+        } 
+      }
+
+      // TODO:处理当前城市预警信息
+      // currentAlarms:[
+      //   {title:"邯郸市发布结冰橙色预警"},
+      //   {title:"邯郸市发布结冰橙色预警"},
+      // ],
+      let alarms = [];
+
+      alarms = marker.alarm.map(a=>{
+        let desc = `${a.alarmTypeName}${a.alarmLevelName}`;
+        
+        return {
+          title:`${marker.city}市发布${desc}预警`,
+          alarmColor:`alarm-${a.alarmLevel}`
+        }
+      })
+      
+      this.setData({
+        currentProvince:marker.province,
+        currentCity:marker.city == marker.currentDistrict?"":marker.city , //如果只精确到了市区，那么市区不显示，县区的位置显示市信息
+        currentDistrict:marker.district,
+    
+        currentAlarms:alarms,
+    
+        startTimeDesc,
+        arriveTimeDesc,
+        arriveTimeWeatherCode,
+        arriveTimeDayOrNight,
+        arriveTimeMinTemp,
+        arriveTimeTemp,
+        arriveTimeMaxTemp,
+        notGoodLastTime,
+        notGoodLastTimeDesc:notGoodLastTime===0?"":notGoodLastTime.toString()+"小时",
+        todayWeather:weatherCode,
+        todayMinTemp:minTemp,
+        todayMaxTemp:maxTemp,
+    
+      });
+
+      return marker;
+    }else{
+      console.error(`marker :${markerId} not exist!`);
+      return undefined;
+    }
   },
 })

@@ -36,7 +36,11 @@ Page({
     },
     stringifyPlace(place){
         // return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
-        return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
+        if(place.province === place.city){
+          return `${place.city}市${place.distinct?place.distinct+"区":""}`
+        }else{
+          return `${place.province?(place.province+"省"):""}${place.city}市${place.distinct?place.distinct+"区":""}`
+        }
     },
     async initData(){
       //根据当前坐标，查询默认出发地点

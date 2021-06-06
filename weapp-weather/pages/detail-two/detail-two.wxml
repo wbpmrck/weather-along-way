@@ -1,50 +1,93 @@
 <View>
-  <cover-view class="weather-summary">
-    <cover-view class="summary-item">
-      <cover-view class="count fix-width-1">{{notGood}}个</cover-view>
-      <cover-view class="count fix-width-1">{{alarmCount}}个</cover-view>
-    </cover-view>
-    <cover-view class="summary-item">
-      <cover-view class="text fix-width-1">区域有不利天气</cover-view>
-      <cover-view class="text fix-width-1">天气预警</cover-view>
-    </cover-view>
-    <cover-view class="summary-item">
-      <cover-view class="distance fix-width-1">{{distanceDesc}}</cover-view>
-      <cover-view class="fix-width-1">
-        <cover-view class="bg-gradient custom-button" bindtap="navigateToDetailOne">
-          调用导航
-        </cover-view>
-      </cover-view>
-    </cover-view>
-  </cover-view>
+  <view hidden="{{!routeMode}}" class="weather-summary {{routeMode?'top-move-down':'down-move-top'}}">
+    <view class="summary-item">
+      <view class="count fix-width-1">{{notGood}}个</view>
+      <view class="count fix-width-1">{{alarmCount}}个</view>
+    </view>
+    <view class="summary-item">
+      <view class="text fix-width-1">区域有不利天气</view>
+      <view class="text fix-width-1">天气预警</view>
+    </view>
+    <view class="summary-item">
+      <view class="distance fix-width-1">{{distanceDesc}}</view>
+      <view class="fix-width-1 share-wrapper">
+        <button id="share-btn" class="bg-gradient" open-type="share">分享线路</button>
+        <!-- <view id="share-btn" class="bg-gradient" bindtap="onShareRouteClick">分享线路</view> -->
+        <!-- <image class="share-img" mode="aspectFit" bindtap="shareRoute" src="./img/share@2x.png"></image> -->
+        <!-- <label class="inner">分享线路</label> -->
+      </view>
+    </view>
+  </view>
+  <view hidden="{{routeMode}}" class="city-detail {{routeMode?'down-move-top':'top-move-down'}}">
+    <view class="top">
+      <view class="address">
+        <view class="district">{{currentDistrict}}</view>
+        <view class="city">{{currentCity}}</view>
+      </view>
+      <view class="today-region bg-gradient">
+        <view class="today">今天</view>
+        <view class="today-weather">{{todayMinTemp}}/{{todayMaxTemp}}℃ {{todayWeather}}</view>
+      </view>
+    </view>
+    <view class="weather-data">
+      <view class="arrive-time-region">
+        <view class="label">预计到达时间</view>
+        <view class="content">{{arriveTimeDesc}}</view>
+      </view>
+      <view class="arrive-weather-region">
+        <view class="label">到达时天气</view>
+        <view class="content">
+          <image mode="aspectFit" src="../../resource/image/city/{{arriveTimeDayOrNight}}{{arriveTimeWeatherCode}}.png"></image>
+          <view class="temp">{{arriveTimeTemp}}℃</view>
+        </view>
+      </view>
+      <view class="not-good-region {{notGoodLastTime === 0?'hidden':''}}">
+      <!-- <view wx:if="{{notGoodLastTime > 0}}" class="not-good-region {{notGoodLastTime === 0?'hidden':''}}"> -->
+        <view class="label">{{notGoodLastTime > 0 ? "不利天气持续":"     "}}</view>
+        <view class="content">{{notGoodLastTimeDesc}}</view>
+      </view>
+    </view>
+    <view class="alarms">
+      <view class="alarm {{alarm.alarmColor}}" wx:for="{{currentAlarms}}" wx:for-index="idx" wx:for-item="alarm" wx:key="title">
+        {{alarm.title}}
+      </view>
+    </view>
+    
+  </view>
   <map class="map" show-compass="{{true}}" 
   id="myMap"
   subkey="{{key}}"
   layer-style="1"
   enable-building="true"
   markers="{{markers}}"
+  bindtap="{{onTapMap}}"
   show-scale="{{true}}" scale="{{scale}}" polyline="{{polyline}}"
    longitude="{{mapCenter.longitude}}" latitude="{{mapCenter.latitude}}" 
    bindmarkertap="onMarkertap" bindcallouttap="onCallouttap">
-   <!-- <cover-view slot="callout">
+   <!-- <view slot="callout">
     <block wx:for="{{markers}}" wx:key="item.id">
-      <cover-view  class="customCallout" marker-id="{{item.id}}" >
-        <cover-image class="icon" src="{{item.customCallout.iconPath}}"></cover-image>
+      <view  class="customCallout" marker-id="{{item.id}}" >
+        <image class="icon" src="{{item.customCallout.iconPath}}"></image>
        
-      </cover-view>
+      </view>
     </block>
-  </cover-view> -->
+  </view> -->
   </map>
   
-  <cover-view class="bottom-region">
+  
+
+  <view class="bottom-region">
+    <image wx:if="{{!routeMode}}" class="return" mode="aspectFit" src="../../resource/image/return.png" bindtap="onReturn"></image>
     
-    <cover-view class="arrange">出发：{{startTimeDesc}} —— 到达：{{endTimeDesc}}</cover-view>
-    <cover-view class="weather-stat">
-      <cover-view wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" wx:key="routeName" class="{{currentSelect===idx?'bg-gradient':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute">
-        <cover-view class="title">{{route.weatherDesc}}</cover-view>
-        <cover-view class="duration">{{route.durationDesc}}</cover-view>
-        <cover-view>{{route.routeName}}</cover-view>
-      </cover-view>
-    </cover-view>
-  </cover-view>
+    <view class="arrange">出发：{{startTimeDesc}} —— 到达：{{endTimeDesc}}</view>
+    <view class="weather-stat">
+      <!-- <view wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" wx:key="routeName" class="{{currentSelect===idx?'bg-gradient':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute"> -->
+      <view wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" 
+      wx:key="routeName" class="{{currentSelect===idx?'select-route':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute">
+        <view class="title">{{route.weatherDesc}}</view>
+        <view class="duration">{{route.durationDesc}}</view>
+        <view>{{route.routeName}}</view>
+      </view>
+    </view>
+  </view>
 </View>
