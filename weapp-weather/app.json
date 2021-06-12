@@ -2,8 +2,15 @@
   "pages": [
     "pages/index/index",
     "pages/calendar/calendar",
-    "pages/city/city",
-    "pages/detail-two/detail-two"
+    "pages/city/city"
+  ],
+  "subpackages": [
+    {
+      "root": "pages/packageB",
+      "pages": [
+        "pages/detail-two/detail-two"
+      ]
+    }
   ],
   "window": {
     "backgroundTextStyle": "light",

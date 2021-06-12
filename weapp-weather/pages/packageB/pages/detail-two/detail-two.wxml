@@ -37,7 +37,7 @@
       <view class="arrive-weather-region">
         <view class="label">到达时天气</view>
         <view class="content">
-          <image mode="aspectFit" src="../../resource/image/city/{{arriveTimeDayOrNight}}{{arriveTimeWeatherCode}}.png"></image>
+          <image mode="aspectFit" src="../../../../resource/image/city/{{arriveTimeDayOrNight}}{{arriveTimeWeatherCode}}.png"></image>
           <view class="temp">{{arriveTimeTemp}}℃</view>
         </view>
       </view>
@@ -77,7 +77,7 @@
   
 
   <view class="bottom-region">
-    <image wx:if="{{!routeMode}}" class="return" mode="aspectFit" src="../../resource/image/return.png" bindtap="onReturn"></image>
+    <image wx:if="{{!routeMode}}" class="return" mode="aspectFit" src="../../../../resource/image/return.png" bindtap="onReturn"></image>
     
     <view class="arrange">出发：{{startTimeDesc}} —— 到达：{{endTimeDesc}}</view>
     <view class="weather-stat">
@@ -94,7 +94,7 @@
 
   <view class="pop-up-mask" wx:if="{{viewWarn}}" bindtap="closeWarn"></view>
   <view class="warn-popup"  wx:if="{{viewWarn}}">
-    <image class="icon" src="{{'../../resource/image/warn/'+currentChosenAlarm.alarmTypeCode+currentChosenAlarm.alarmLevel+'.png'}}" mode="aspectFit"></image>
+    <image class="icon" src="{{'../detail-two/img/warn/'+currentChosenAlarm.alarmTypeCode+currentChosenAlarm.alarmLevel+'.png'}}" mode="aspectFit"></image>
     <view class="title alarm-{{currentChosenAlarm.alarmLevel}}">{{currentChosenAlarm.alarmTypeName + currentChosenAlarm.alarmLevelName + '预警'}}</view>
     <view class="content">{{currentChosenAlarm.content}}</view>
     <!-- <view class="share-warn bg-gradient">分享天气</view> -->

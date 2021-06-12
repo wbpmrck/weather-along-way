@@ -1,12 +1,12 @@
-import { findCity } from "../../libs/baidu-map/adcode";
-import {cityData,findCityInfo,findCityByCode} from '../city/city-data'
-import {callBaiduMapAPI,apis} from "../../libs/baidu-map/webapi-sdk"
-import {request} from "../../libs/wechat-helper/wx-request-helper"
-import moment from "../../libs/moment/moment-wrapper"
-import {removeDump,removeItem,NOT_DEAL_ME} from "../../utils/array-util"
-import {getDayPrefix} from "../../utils/time-util"
-import {kmForGutter} from "../../configs/index"
-import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../libs/china-weather/sdk"
+import { findCity } from "../../../../libs/baidu-map/adcode";
+import {cityData,findCityInfo,findCityByCode} from '..../../../../../city/city-data'
+import {callBaiduMapAPI,apis} from "../../../../libs/baidu-map/webapi-sdk"
+import {request} from "../../../../libs/wechat-helper/wx-request-helper"
+import moment from "../../../../libs/moment/moment-wrapper"
+import {removeDump,removeItem,NOT_DEAL_ME} from "../../../../utils/array-util"
+import {getDayPrefix} from "../../../../utils/time-util"
+import {kmForGutter} from "../../../../configs/index"
+import {callWeatherAPi,apis as weatherAPI,responseParser,weatherCodes,isNotGood} from "../../../../libs/china-weather/sdk"
 Page({
   data: {
     key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
@@ -317,7 +317,7 @@ Page({
                                     };
                                     //更新他的图标信息
                                     let hour = m.arriveTime.getHours();
-                                    m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${weather}.png`;
+                                    m.iconPath=`../../../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${weather}.png`;
                                     // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[weather]})` 
                                     // m.callout.content += `${weatherCodes.weather[weather]}` 
                                     m.callout = {};
@@ -343,7 +343,7 @@ Page({
                                         };
                                         //更新他的图标信息
                                         let hour = m.arriveTime.getHours();
-                                        m.iconPath=`../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
+                                        m.iconPath=`../../../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
                                         // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
                                         // m.callout.content += `${weatherCodes.weather[record.weather]}` 
                                         m.callout = {};

@@ -161,7 +161,8 @@ Page({
       console.log(evt);
       let param = this.data.history[evt.target.dataset.idx];
       wx.navigateTo({
-          url: `../detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
+          url: `../packageB/pages/detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
+          // url: `../../pkgB/pages/detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
       })
     },
     
@@ -190,7 +191,7 @@ Page({
         addHistory(param);
 
         wx.navigateTo({
-            url: `../detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
+            url: `../packageB/pages/detail-two/detail-two?from=${param.from}&fromCode=${param.fromCode}&fromLat=${param.fromLat}&fromLnt=${param.fromLnt}&to=${param.to}&toCode=${param.toCode}&toLat=${param.toLat}&toLnt=${param.toLnt}&date=${param.date}&time=${param.time}`,
         })
     },
     chooseStartingPlace(e) {
