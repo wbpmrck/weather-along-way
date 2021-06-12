@@ -11,7 +11,7 @@
     <view class="summary-item">
       <view class="distance fix-width-1">{{distanceDesc}}</view>
       <view class="fix-width-1 share-wrapper">
-        <button id="share-btn" class="bg-gradient" open-type="share">分享线路</button>
+        <button id="share-btn" class="bg-gradient" open-type="share" data-from="route">分享线路</button>
         <!-- <view id="share-btn" class="bg-gradient" bindtap="onShareRouteClick">分享线路</view> -->
         <!-- <image class="share-img" mode="aspectFit" bindtap="shareRoute" src="./img/share@2x.png"></image> -->
         <!-- <label class="inner">分享线路</label> -->
@@ -48,7 +48,7 @@
       </view>
     </view>
     <view class="alarms">
-      <view class="alarm {{alarm.alarmColor}}" wx:for="{{currentAlarms}}" wx:for-index="idx" wx:for-item="alarm" wx:key="title">
+      <view class="alarm {{alarm.alarmColor}}" wx:for="{{currentAlarms}}" wx:for-index="idx" wx:for-item="alarm" wx:key="title" bindtap="onWarnClick" data-alarm-idx="{{idx}}">
         {{alarm.title}}
       </view>
     </view>
@@ -90,4 +90,16 @@
       </view>
     </view>
   </view>
+
+
+  <view class="pop-up-mask" wx:if="{{viewWarn}}" bindtap="closeWarn"></view>
+  <view class="warn-popup"  wx:if="{{viewWarn}}">
+    <image class="icon" src="{{'../../resource/image/warn/'+currentChosenAlarm.alarmTypeCode+currentChosenAlarm.alarmLevel+'.png'}}" mode="aspectFit"></image>
+    <view class="title alarm-{{currentChosenAlarm.alarmLevel}}">{{currentChosenAlarm.alarmTypeName + currentChosenAlarm.alarmLevelName + '预警'}}</view>
+    <view class="content">{{currentChosenAlarm.content}}</view>
+    <!-- <view class="share-warn bg-gradient">分享天气</view> -->
+    <button id="share-btn-2" class="share-warn bg-gradient" open-type="share" data-from="warn">分享天气</button>
+  </view>
+
+
 </View>

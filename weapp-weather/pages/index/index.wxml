@@ -55,8 +55,4 @@
     </view>
   </view>
 
-  <view class="pop-up-mask"></view>
-  <view class="warn-popup">
-    <view class="share-warn">分享天气</view>
-  </view>
 </view>

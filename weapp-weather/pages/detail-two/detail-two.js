@@ -53,6 +53,7 @@ Page({
         // {title:"邯郸市发布结冰橙色预警"},
         // {title:"邯郸市发布结冰橙色预警"},
       ],
+      currentChosenAlarm:{},
 
   
       startTimeDesc:"今天08:23",
@@ -69,6 +70,7 @@ Page({
       todayMinTemp:"6",
       todayMaxTemp:"18",
   
+      viewWarn:false,
     //   currentRouteData:undefined
   },
     parseTime(time){
@@ -858,16 +860,32 @@ Page({
     })
   },
   onShareAppMessage(args){
-    return {
-      title:`从[${this.data.from}]到[${this.data.to}]` 
-      // title:`[${moment(this.data.startTime).format("MM月DD日 HH时")}]从[${this.data.from}]到[${this.data.to}]` 
+    console.log(args);
+    if(args.target.dataset.from === "route"){
+      return {
+        title:`从[${this.data.from}]到[${this.data.to}]` 
+        // title:`[${moment(this.data.startTime).format("MM月DD日 HH时")}]从[${this.data.from}]到[${this.data.to}]` 
+      }
+    }else{
+      return {
+        title:`[${this.data.currentCity}]有[${this.data.currentChosenAlarm.alarmTypeName + this.data.currentChosenAlarm.alarmLevelName + '预警'}]` 
+      }
     }
   },
-  shareRoute(args){
-    console.log('shareRoute');
+  onWarnClick(args){
+    console.log('onWarnClick');
     console.log(args);
-
-    wx.showToast({ title: '分享开发中...',duration:500 })
+    let warnData = this.data.currentAlarms[args.currentTarget.dataset.alarmIdx].raw;
+    console.log(warnData);
+    this.setData({
+      viewWarn : true,
+      currentChosenAlarm:warnData
+    });
+  },
+  closeWarn(){
+    this.setData({
+      viewWarn : false
+    })
   },
   handleMarkerTap(args){
     //   if(this.data.routeMode){
@@ -1067,7 +1085,8 @@ Page({
         
         return {
           title:`${marker.city}市发布${desc}预警`,
-          alarmColor:`alarm-${a.alarmLevel}`
+          alarmColor:`alarm-${a.alarmLevel}`,
+          raw:a
         }
       })
       
