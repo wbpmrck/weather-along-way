@@ -83,7 +83,7 @@
     <view class="weather-stat">
       <!-- <view wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" wx:key="routeName" class="{{currentSelect===idx?'bg-gradient':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute"> -->
       <view wx:for="{{allRoutes}}" wx:for-index="idx" wx:for-item="route" 
-      wx:key="routeName" class="{{currentSelect===idx?'select-route':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute">
+      wx:key="routeName" class="{{currentSelect===idx?'select-route bg-gradient':''}} stat-item" data-idx="{{idx}}" bind:tap="chooseRoute">
         <view class="title">{{route.weatherDesc}}</view>
         <view class="duration">{{route.durationDesc}}</view>
         <view>{{route.routeName}}</view>

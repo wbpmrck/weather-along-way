@@ -63,7 +63,7 @@
   z-index: 110;
   width: 120px;
   height: 35px;
-  /* line-height: 35px; */
+  line-height: 18px;
   margin: none;
   padding: none;
   /* font-size: 18px; */
@@ -125,12 +125,12 @@
 .weather-stat {
   display: flex;
   justify-content: space-between;
-  margin: 10rpx 10rpx;
+  margin: 10rpx 10rpx 60rpx 10rpx;
   text-align: center;
 }
 
-.select-route {
-  background-color: #65A1FF;
+.stat-item.select-route {
+  /* background-color: #65A1FF; */
   color: #fff;
 }
 
@@ -138,6 +138,7 @@
   padding: 16rpx;
   font-size: 32rpx;
   border-radius: 16rpx;
+  color: #efefef;
 }
 
 .stat-item .title {
