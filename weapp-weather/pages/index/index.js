@@ -28,6 +28,7 @@ Page({
         startingPlace: {}, // {province: '',city: '', district: '', code: '',longitude: '',latitude: ''}
         destination: {},// {province: '',city: '', district: '', code: '',longitude: '',latitude: ''}
         date: '',
+        dateText: '',
         startDate:format(new Date(),'yyyy-MM-dd'),
         endDate:format(new Date((+new Date()) + 1000*3600*24*7),'yyyy-MM-dd'), //只允许选7天内的日期（主要考虑天气接口）
         time:'',
@@ -107,8 +108,10 @@ Page({
       //设置默认出发时间为当前
       let date = moment().format("YYYY-MM-DD");
       let time = moment().format("HH:mm");
+      let t = moment().format("M月D日");
       this.setData({
         date,
+        dateText: t,
         time,
       });
 
@@ -200,9 +203,18 @@ Page({
             url: `../city/city?type=${type}`,
         })
     },
-    bindDateChange: function(e) {
+    // 交换起止地址
+    changeStartEnd(){
       this.setData({
-        date: e.detail.value
+        startingPlace:this.data.destination,
+        destination:this.data.startingPlace
+      })
+    },
+    bindDateChange: function(e) {
+      let t = moment(e.detail.value).format("M月D日");
+      this.setData({
+        date: e.detail.value,
+        dateText: t
       })
     },
     bindTimeChange: function(e) {

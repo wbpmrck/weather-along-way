@@ -21,6 +21,8 @@
        
       </view>
       <view class="bottom-divide">
+        <image class="changeStartEnd" mode="aspectFit" src="./img/huhuan@2x.png" bindtap="changeStartEnd"></image>
+
         <picker mode="multiSelector" data-t="startplace" bindchange="bindMultiPickerChange2" bindcolumnchange="bindMultiPickerColumnChange2" value="{{multiIndex2}}" range="{{range2}}">
           <view class="input-label form-item">出发地：</view>
           <!-- <view class="input-value start-form-item form-item" bindtap="chooseStartingPlace" data-type="s"> -->
@@ -35,7 +37,7 @@
       <view class="bottom-divide">
         <view class="input-label  form-item">出发时间：</view>
         <picker class="picker-date  form-item" mode="date" value="{{date}}" start="{{startDate}}" end="{{endDate}}" bindchange="bindDateChange">
-          <view class="picker">{{date}}</view>
+          <view class="picker">{{dateText}}</view>
         </picker>
         <picker class="picker-time  form-item" mode="time" value="{{time}}" start="{{startTime}}" bindchange="bindTimeChange">
           <view class="picker">{{time}}</view>

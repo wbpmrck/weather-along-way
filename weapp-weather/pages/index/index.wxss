@@ -9,8 +9,9 @@
 }
 
 .info {
-  width: 580rpx;
-  padding: 36rpx 30rpx 40rpx 30rpx;
+  width: 640rpx;
+  box-sizing: border-box;
+  padding: 36rpx 20rpx 40rpx 80rpx;
   border-radius: 16rpx;
   opacity: .92;
   margin-bottom: 60rpx;
@@ -19,6 +20,7 @@
 .picker {
   height: 40rpx;
   font-size: 34rpx;
+  text-align: left;
 }
 
 .label-destination {
@@ -111,17 +113,25 @@
 }
 
 .bottom-divide {
-  border-bottom: 1rpx solid #fff;
+  /* border-bottom: 1rpx solid #fff; */
 }
 
 .picker-date {
   display: inline-block;
-  width: 42%;
+  width: 24%;
+  /* width: 42%; */
 }
 
 .picker-time {
   display: inline-block;
-  width: 25%;
+  width: 24%;
+}
+
+.changeStartEnd {
+  position: absolute;
+  width: 50rpx;
+  height: 50rpx;
+  transform: translateX(-124%) translateY(-52%);
 }
 
 /* 搜索历史记录区域 */
