@@ -1,0 +1,1500 @@
+
+        isPM: function (input) {
+            return (input + '').toLowerCase()[0] === 'μ';
+        },
+        meridiemParse: /[ΠΜ]\.?Μ?\.?/i,
+        longDateFormat: {
+            LT: 'h:mm A',
+            LTS: 'h:mm:ss A',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY h:mm A',
+            LLLL: 'dddd, D MMMM YYYY h:mm A',
+        },
+        calendarEl: {
+            sameDay: '[Σήμερα {}] LT',
+            nextDay: '[Αύριο {}] LT',
+            nextWeek: 'dddd [{}] LT',
+            lastDay: '[Χθες {}] LT',
+            lastWeek: function () {
+                switch (this.day()) {
+                    case 6:
+                        return '[το προηγούμενο] dddd [{}] LT';
+                    default:
+                        return '[την προηγούμενη] dddd [{}] LT';
+                }
+            },
+            sameElse: 'L',
+        },
+        calendar: function (key, mom) {
+            var output = this._calendarEl[key],
+                hours = mom && mom.hours();
+            if (isFunction(output)) {
+                output = output.apply(mom);
+            }
+            return output.replace('{}', hours % 12 === 1 ? 'στη' : 'στις');
+        },
+        relativeTime: {
+            future: 'σε %s',
+            past: '%s πριν',
+            s: 'λίγα δευτερόλεπτα',
+            ss: '%d δευτερόλεπτα',
+            m: 'ένα λεπτό',
+            mm: '%d λεπτά',
+            h: 'μία ώρα',
+            hh: '%d ώρες',
+            d: 'μία μέρα',
+            dd: '%d μέρες',
+            M: 'ένας μήνας',
+            MM: '%d μήνες',
+            y: 'ένας χρόνος',
+            yy: '%d χρόνια',
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}η/,
+        ordinal: '%dη',
+        week: {
+            dow: 1, // Monday is the first day of the week.
+            doy: 4, // The week that contains Jan 4st is the first week of the year.
+        },
+    });
+
+    //! moment.js locale configuration
+
+    moment.defineLocale('en-au', {
+        months: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
+            '_'
+        ),
+        monthsShort: 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
+        weekdays: 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split(
+            '_'
+        ),
+        weekdaysShort: 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
+        weekdaysMin: 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
+        longDateFormat: {
+            LT: 'h:mm A',
+            LTS: 'h:mm:ss A',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY h:mm A',
+            LLLL: 'dddd, D MMMM YYYY h:mm A',
+        },
+        calendar: {
+            sameDay: '[Today at] LT',
+            nextDay: '[Tomorrow at] LT',
+            nextWeek: 'dddd [at] LT',
+            lastDay: '[Yesterday at] LT',
+            lastWeek: '[Last] dddd [at] LT',
+            sameElse: 'L',
+        },
+        relativeTime: {
+            future: 'in %s',
+            past: '%s ago',
+            s: 'a few seconds',
+            ss: '%d seconds',
+            m: 'a minute',
+            mm: '%d minutes',
+            h: 'an hour',
+            hh: '%d hours',
+            d: 'a day',
+            dd: '%d days',
+            M: 'a month',
+            MM: '%d months',
+            y: 'a year',
+            yy: '%d years',
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
+        ordinal: function (number) {
+            var b = number % 10,
+                output =
+                    ~~((number % 100) / 10) === 1
+                        ? 'th'
+                        : b === 1
+                        ? 'st'
+                        : b === 2
+                        ? 'nd'
+                        : b === 3
+                        ? 'rd'
+                        : 'th';
+            return number + output;
+        },
+        week: {
+            dow: 0, // Sunday is the first day of the week.
+            doy: 4, // The week that contains Jan 4th is the first week of the year.
+        },
+    });
+
+    //! moment.js locale configuration
+
+    moment.defineLocale('en-ca', {
+        months: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
+            '_'
+        ),
+        monthsShort: 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
+        weekdays: 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split(
+            '_'
+        ),
+        weekdaysShort: 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
+        weekdaysMin: 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
+        longDateFormat: {
+            LT: 'h:mm A',
+            LTS: 'h:mm:ss A',
+            L: 'YYYY-MM-DD',
+            LL: 'MMMM D, YYYY',
+            LLL: 'MMMM D, YYYY h:mm A',
+            LLLL: 'dddd, MMMM D, YYYY h:mm A',
+        },
+        calendar: {
+            sameDay: '[Today at] LT',
+            nextDay: '[Tomorrow at] LT',
+            nextWeek: 'dddd [at] LT',
+            lastDay: '[Yesterday at] LT',
+            lastWeek: '[Last] dddd [at] LT',
+            sameElse: 'L',
+        },
+        relativeTime: {
+            future: 'in %s',
+            past: '%s ago',
+            s: 'a few seconds',
+            ss: '%d seconds',
+            m: 'a minute',
+            mm: '%d minutes',
+            h: 'an hour',
+            hh: '%d hours',
+            d: 'a day',
+            dd: '%d days',
+            M: 'a month',
+            MM: '%d months',
+            y: 'a year',
+            yy: '%d years',
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
+        ordinal: function (number) {
+            var b = number % 10,
+                output =
+                    ~~((number % 100) / 10) === 1
+                        ? 'th'
+                        : b === 1
+                        ? 'st'
+                        : b === 2
+                        ? 'nd'
+                        : b === 3
+                        ? 'rd'
+                        : 'th';
+            return number + output;
+        },
+    });
+
+    //! moment.js locale configuration
+
+    moment.defineLocale('en-gb', {
+        months: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
+            '_'
+        ),
+        monthsShort: 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
+        weekdays: 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split(
+            '_'
+        ),
+        weekdaysShort: 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
+        weekdaysMin: 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd, D MMMM YYYY HH:mm',
+        },
+        calendar: {
+            sameDay: '[Today at] LT',
+            nextDay: '[Tomorrow at] LT',
+            nextWeek: 'dddd [at] LT',
+            lastDay: '[Yesterday at] LT',
+            lastWeek: '[Last] dddd [at] LT',
+            sameElse: 'L',
+        },
+        relativeTime: {
+            future: 'in %s',
+            past: '%s ago',
+            s: 'a few seconds',
+            ss: '%d seconds',
+            m: 'a minute',
+            mm: '%d minutes',
+            h: 'an hour',
+            hh: '%d hours',
+            d: 'a day',
+            dd: '%d days',
+            M: 'a month',
+            MM: '%d months',
+            y: 'a year',
+            yy: '%d years',
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
+        ordinal: function (number) {
+            var b = number % 10,
+                output =
+                    ~~((number % 100) / 10) === 1
+                        ? 'th'
+                        : b === 1
+                        ? 'st'
+                        : b === 2
+                        ? 'nd'
+                        : b === 3
+                        ? 'rd'
+                        : 'th';
+            return number + output;
+        },
+        week: {
+            dow: 1, // Monday is the first day of the week.
+            doy: 4, // The week that contains Jan 4th is the first week of the year.
+        },
+    });
+    moment.defineLocale('af', {
+        months: 'Januarie_Februarie_Maart_April_Mei_Junie_Julie_Augustus_September_Oktober_November_Desember'.split(
+            '_'
+        ),
+        monthsShort: 'Jan_Feb_Mrt_Apr_Mei_Jun_Jul_Aug_Sep_Okt_Nov_Des'.split('_'),
+        weekdays: 'Sondag_Maandag_Dinsdag_Woensdag_Donderdag_Vrydag_Saterdag'.split(
+            '_'
+        ),
+        weekdaysShort: 'Son_Maa_Din_Woe_Don_Vry_Sat'.split('_'),
+        weekdaysMin: 'So_Ma_Di_Wo_Do_Vr_Sa'.split('_'),
+        meridiemParse: /vm|nm/i,
+        isPM: function (input) {
+            return /^nm$/i.test(input);
+        },
+        meridiem: function (hours, minutes, isLower) {
+            if (hours < 12) {
+                return isLower ? 'vm' : 'VM';
+            } else {
+                return isLower ? 'nm' : 'NM';
+            }
+        },
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd, D MMMM YYYY HH:mm',
+        },
+        calendar: {
+            sameDay: '[Vandag om] LT',
+            nextDay: '[Môre om] LT',
+            nextWeek: 'dddd [om] LT',
+            lastDay: '[Gister om] LT',
+            lastWeek: '[Laas] dddd [om] LT',
+            sameElse: 'L',
+        },
+        relativeTime: {
+            future: 'oor %s',
+            past: '%s gelede',
+            s: "'n paar sekondes",
+            ss: '%d sekondes',
+            m: "'n minuut",
+            mm: '%d minute',
+            h: "'n uur",
+            hh: '%d ure',
+            d: "'n dag",
+            dd: '%d dae',
+            M: "'n maand",
+            MM: '%d maande',
+            y: "'n jaar",
+            yy: '%d jaar',
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(ste|de)/,
+        ordinal: function (number) {
+            return (
+                number +
+                (number === 1 || number === 8 || number >= 20 ? 'ste' : 'de')
+            ); // Thanks to Joris Röling : https://github.com/jjupiter
+        },
+        week: {
+            dow: 1, // Maandag is die eerste dag van die week.
+            doy: 4, // Die week wat die 4de Januarie bevat is die eerste week van die jaar.
+        },
+    });
+
+    //! moment.js locale configuration
+
+    var pluralForm = function (n) {
+            return n === 0
+                ? 0
+                : n === 1
+                ? 1
+                : n === 2
+                ? 2
+                : n % 100 >= 3 && n % 100 <= 10
+                ? 3
+                : n % 100 >= 11
+                ? 4
+                : 5;
+        },
+        plurals = {
+            s: [
+                'أقل من ثانية',
+                'ثانية واحدة',
+                ['ثانيتان', 'ثانيتين'],
+                '%d ثوان',
+                '%d ثانية',
+                '%d ثانية',
+            ],
+            m: [
+                'أقل من دقيقة',
+                'دقيقة واحدة',
+                ['دقيقتان', 'دقيقتين'],
+                '%d دقائق',
+                '%d دقيقة',
+                '%d دقيقة',
+            ],
+            h: [
+                'أقل من ساعة',
+                'ساعة واحدة',
+                ['ساعتان', 'ساعتين'],
+                '%d ساعات',
+                '%d ساعة',
+                '%d ساعة',
+            ],
+            d: [
+                'أقل من يوم',
+                'يوم واحد',
+                ['يومان', 'يومين'],
+                '%d أيام',
+                '%d يومًا',
+                '%d يوم',
+            ],
+            M: [
+                'أقل من شهر',
+                'شهر واحد',
+                ['شهران', 'شهرين'],
+                '%d أشهر',
+                '%d شهرا',
+                '%d شهر',
+            ],
+            y: [
+                'أقل من عام',
+                'عام واحد',
+                ['عامان', 'عامين'],
+                '%d أعوام',
+                '%d عامًا',
+                '%d عام',
+            ],
+        },
+        pluralize = function (u) {
+            return function (number, withoutSuffix, string, isFuture) {
+                var f = pluralForm(number),
+                    str = plurals[u][pluralForm(number)];
+                if (f === 2) {
+                    str = str[withoutSuffix ? 0 : 1];
+                }
+                return str.replace(/%d/i, number);
+            };
+        },
+        months = [
+            'جانفي',
+            'فيفري',
+            'مارس',
+            'أفريل',
+            'ماي',
+            'جوان',
+            'جويلية',
+            'أوت',
+            'سبتمبر',
+            'أكتوبر',
+            'نوفمبر',
+            'ديسمبر',
+        ];
+
+    moment.defineLocale('ar-dz', {
+        months: months,
+        monthsShort: months,
+        weekdays: 'الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
+        weekdaysShort: 'أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت'.split('_'),
+        weekdaysMin: 'ح_ن_ث_ر_خ_ج_س'.split('_'),
+        weekdaysParseExact: true,
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'D/\u200FM/\u200FYYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd D MMMM YYYY HH:mm',
+        },
+        meridiemParse: /ص|م/,
+        isPM: function (input) {
+            return 'م' === input;
+        },
+        meridiem: function (hour, minute, isLower) {
+            if (hour < 12) {
+                return 'ص';
+            } else {
+                return 'م';
+            }
+        },
+        calendar: {
+            sameDay: '[اليوم عند الساعة] LT',
+            nextDay: '[غدًا عند الساعة] LT',
+            nextWeek: 'dddd [عند الساعة] LT',
+            lastDay: '[أمس عند الساعة] LT',
+            lastWeek: 'dddd [عند الساعة] LT',
+            sameElse: 'L',
+        },
+        relativeTime: {
+            future: 'بعد %s',
+            past: 'منذ %s',
+            s: pluralize('s'),
+            ss: pluralize('s'),
+            m: pluralize('m'),
+            mm: pluralize('m'),
+            h: pluralize('h'),
+            hh: pluralize('h'),
+            d: pluralize('d'),
+            dd: pluralize('d'),
+            M: pluralize('M'),
+            MM: pluralize('M'),
+            y: pluralize('y'),
+            yy: pluralize('y'),
+        },
+        postformat: function (string) {
+            return string.replace(/,/g, '،');
+        },
+        week: {
+            dow: 0, // Sunday is the first day of the week.
+            doy: 4, // The week that contains Jan 4th is the first week of the year.
+        },
+    });
+
+    //! moment.js locale configuration
+
+    moment.defineLocale('ar-kw', {
+        months: 'يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر'.split(
+            '_'
+        ),
+        monthsShort: 'يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر'.split(
+            '_'
+        ),
+        weekdays: 'الأحد_الإتنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
+        weekdaysShort: 'احد_اتنين_ثلاثاء_اربعاء_خميس_جمعة_سبت'.split('_'),
+        weekdaysMin: 'ح_ن_ث_ر_خ_ج_س'.split('_'),
+        weekdaysParseExact: true,
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd D MMMM YYYY HH:mm',
+        },
+  data: {
+    key:"XLJBZ-ZDTK3-PZQ3V-3AKCJ-4VWGQ-VQF3L",
+    routeMode:true, 
+      from:"",
+      fromCode:"",
+      fromLat:"",
+      fromLnt:"",
+      to:"",
+      toCode:"",
+      toLat:"",
+      toLnt:"",
+
+      markerIdSeed: 10000, 
+      startTime:"", 
+      startTimeDesc:"", 
+
+      endTime:new Date(), 
+      endTimeDesc:"", 
+
+      weatherDesc:"",
+      distance:0,
+      distanceDesc:"",
+      duration:0,
+      durationDesc:"",
+      scale:5,
+      polyline:[],
+      mapCenter:{
+        latitude: undefined,
+        longitude: undefined,
+      },
+      markers: [],
+      allRoutes:[],
+      currentSelect:0,
+
+      currentProvince:"xx省",
+      currentCity:"邯郸市",
+      currentDistrict:"雁塔区",
+  
+      currentAlarms:[
+      ],
+      currentChosenAlarm:{},
+
+  
+      startTimeDesc:"今天08:23",
+      arriveTimeDesc:"今天20:33",
+      arriveTimeWeatherCode:"00",
+      arriveTimeDayOrNight:"d",
+      arriveTimeMinTemp:"23",
+      arriveTimeMaxTemp:"30",
+      arriveTimeTemp:"",
+      notGoodLastTime:0,
+      notGoodLastTimeDesc:"",
+  
+      todayWeather:"小雨转大雨",
+      todayMinTemp:"6",
+      todayMaxTemp:"18",
+  
+      viewWarn:false,
+    //   currentRouteData:undefined
+  },
+    parseTime(time){
+        // let timeDesc = moment(time).calendar();
+        let timeDesc = `${getDayPrefix(time,"MM月dd日")}${moment(time).format('H:mm')}`;
+        return timeDesc;
+    },
+    parseDuration(duration){
+        let durationDesc = moment.duration(duration, "seconds").format('H小时m分钟');
+        return durationDesc;
+    },
+    parseDistance(distance){
+        let distanceDesc = `${ (distance/1000).toFixed(2)}公里`;
+        return distanceDesc;
+    },
+    showRoute(idx){
+        let cachedData = this.data.allRoutes[idx];
+        //console.log(cachedData);
+        console.log('切换路线:',idx);
+        console.log('中心点:');
+        console.log(cachedData.mapCenter);
+        this.setData(cachedData);
+        const appInstance = getApp();
+        appInstance.globalData.currentRouteData = cachedData;
+        wx.showToast({ title: '切换路线成功',duration:500 })
+    },
+    chooseRoute:function(evt){
+        let idx = evt.currentTarget.dataset.idx;
+        this.showRoute(idx);
+        this.setData({
+            routeMode:true,
+            scale:6,
+        })
+    },
+
+    fullfillRouteInfo:async function(routeMetaData){
+
+        /*
+        routeMetaData = {
+            routeName:"",
+            weatherDesc:"天气不错/有预警天气/有不利天气",
+            distance,//距离（米）
+            distanceDesc:this.parseDistance(distance),
+            duration,//时长（秒）
+            durationDesc:this.parseDuration(duration),
+            endTime,
+            endTimeDesc:this.parseTime(endTime),
+            scale,
+            markers,
+            mapCenter,
+            polyline:newPath
+        }
+        */
+
+        let markers = routeMetaData.markers;
+        let beginCity = findCityByCode(this.data.fromCode);
+        // markers[0].callout.content = this.data.from;
+        markers[0].callout.content = "(起点)";
+        markers[0].adcode = this.data.fromCode;
+        markers[0].province =beginCity.province;
+        markers[0].city =beginCity.city;
+        markers[0].district =beginCity.district;
+
+        let endCity = findCityByCode(this.data.toCode);
+        // markers[markers.length-1].callout.content = this.data.to;
+        markers[markers.length-1].callout.content = "(终点)";
+        markers[markers.length-1].adcode = this.data.toCode;
+        markers[markers.length-1].province =endCity.province;
+        markers[markers.length-1].city =endCity.city;
+        markers[markers.length-1].district =endCity.district;
+        let getCityQueue =[];
+        try{
+            for(let i=1;i<markers.length-1;i++){
+                let m =markers[i];
+                getCityQueue.push(callBaiduMapAPI(apis.REVERSE_GEOCODING,{location:`${m.latitude},${m.longitude}`}))
+            }
+
+            let results = await Promise.all(getCityQueue);
+
+            //console.log('fullfillRouteInfo：');
+            console.log(results);
+
+            results.forEach( (resp,idx)=>{
+                if(resp && resp.statusCode === 200 && resp.data.status === 0){
+                    let foundCity = findCityInfo(resp.data.result.addressComponent.district);
+                    if(foundCity === undefined){
+                        console.log(`NOT found ${resp.data.result.addressComponent.district},use ${resp.data.result.addressComponent.city} instead!`);
+                        foundCity = findCityInfo(resp.data.result.addressComponent.city);
+                        if(foundCity){
+                            // markers[idx+1].callout.content =foundCity.city; //只找到城市，则显示城市
+                            markers[idx+1].adcode =foundCity.code;
+                            markers[idx+1].province =foundCity.province;
+                            markers[idx+1].city =foundCity.city;
+                            markers[idx+1].district =foundCity.district;
+                        }else{
+                            markers[idx+1].delete = true;
+
+                        }
+                    }else{
+                        // markers[idx+1].callout.content =foundCity.city+'-'+foundCity.district; //找到区县，则显示区县
+                        markers[idx+1].adcode =foundCity.code;
+                        markers[idx+1].province =foundCity.province;
+                        markers[idx+1].city =foundCity.city;
+                        markers[idx+1].district =foundCity.district;
+                    }
+                }
+            })
+          }catch(e){
+            console.error(e);
+          }
+          console.log(`before remove dump:`);
+          console.log(markers);
+          removeDump(routeMetaData.markers,(item,idx)=>{
+              if(idx === 0 || idx === routeMetaData.markers.length-1){
+                  return NOT_DEAL_ME;
+              }else{
+                // return item.callout.content
+                return `${item.province}${item.city}${item.district}`
+              }
+          });
+          removeItem(routeMetaData.markers,(item,idx)=>{
+              if(item.delete){
+                console.log(`从路由中删除marker:${item.id}, ${item.province}`)
+                console.log(item)
+                return true;
+              }
+           });
+          //console.log(`after remove dump:`);
+          console.log(markers);
+
+        return routeMetaData
+    },
+
+    fullfillRouteWeatherInfo:async function(routeMetaData){
+
+        /*
+        routeMetaData = {
+            routeName:"",
+            weatherDesc:"天气不错/有预警天气/有不利天气",
+            distance,//距离（米）
+            distanceDesc:this.parseDistance(distance),
+            duration,//时长（秒）
+            durationDesc:this.parseDuration(duration),
+            endTime,
+            endTimeDesc:this.parseTime(endTime),
+            scale,
+            markers:{
+                        markerId: this.data.markerIdSeed++,
+                        latitude: p_latitude,
+                        longitude:p_longitude,
+                        zIndex: 100,
+                        width:16,
+                        height:16,
+                        adcode:"122222",
+                        iconPath: '../../resource/image/marker.png',
+                        callout: {
+                            display: 'ALWAYS',
+                            content: `marker:${markers.length}`,
+                            color: '#000',
+                            fontSize: '14',
+                            borderRadius: 2,
+                            bgColor: '#5B9FFF',
+                            // padding: 1,
+                            textAlign: 'center'
+                        }
+                    },
+            mapCenter,
+            polyline:newPath
+        }
+        */
+        let getWeatherQueue = [];
+        let markers = routeMetaData.markers;
+        console.log(`has ${markers.length} markers`)
+        markers.forEach((marker,index)=>{
+            // console.log(`${index}-${marker.adcode}`)
+            getWeatherQueue.push(callWeatherAPi(weatherAPI.EVERY_HOUR,{
+                area:marker.adcode
+            }))
+        });
+        let results = await Promise.all(getWeatherQueue);
+        results.forEach( (resp,idx)=>{
+            if(resp && resp.statusCode === 200 && resp.data){
+                console.log(resp);
+                let parsed = responseParser.parseCityInterface(resp.data);
+                // console.log(parsed);
+                if(parsed === undefined){
+                    // console.log(`${idx}-获取天气失败了`)
+                }
+                
+                let marker = markers.filter(m=>{
+                    // console.log(`find marker:${m.adcode},compare with:${parsed.adcode}`)
+                    return m.adcode == parsed.adcode
+                });
+                // console.log('marker:');
+                // console.log(marker);
+
+                if(marker && marker.length > 0){
+                    marker.forEach(m=>{
+
+                        m.weather = parsed;
+
+                        m.alarm = parsed.alarm;
+                        
+                        let arriveAt = moment(m.arriveTime).format("yyyyMMDDHHmmss");
+                        console.log(`${m.id}.arriveAt = ${arriveAt}  ,m.arriveTime=${m.arriveTime}`);
+                        if(parsed){
+                            let found = false;
+                            
+                            let oneHourData = parsed["1h"];
+                            for(let i=0;i<oneHourData.length;i++){
+                                let hourData = oneHourData[i];
+                                let {temp,time,weather,windDirection,windPower} = hourData;
+                      
+                                let timeEnd = moment(time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+                                if(arriveAt >= time && arriveAt <= timeEnd){
+                                    found = true;
+                                    console.log(`找到1h数据中-marker:${m.id},${m.city}的天气数据`);
+                                    
+                                    m.weatherWhenArrive = {
+                                        maxTemp: temp,
+                                        minTemp: temp,
+                                        weather: weather,
+                                        windDirection: windDirection,
+                                        windPower: windPower,
+                                    };
+                                    let hour = m.arriveTime.getHours();
+                                    m.iconPath=`../../../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${weather}.png`;
+                                    // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[weather]})` 
+                                    // m.callout.content += `${weatherCodes.weather[weather]}` 
+                                    m.callout = {};
+                                    break;
+                                }
+                      
+                            }
+
+                            if(!found){
+                                for(let i=0;i<parsed["12h"].length;i++){
+                                    let record = parsed["12h"][i];
+        
+                                    if(record.timeBegin <= arriveAt && arriveAt <= record.timeEnd){
+                                        found = true;
+                                        console.log(`marker :${m.id},${marker.adcode}  arriveAt = ${arriveAt},找到12h中对应的天气`)
+                                        m.weatherWhenArrive = {
+                                            maxTemp: record.maxTemp,
+                                            minTemp: record.minTemp,
+                                            weather: record.weather,
+                                            windDirection: record.windDirection,
+                                            windPower: record.windPower,
+                                        };
+                                        //更新他的图标信息
+                                        let hour = m.arriveTime.getHours();
+                                        m.iconPath=`../../../../resource/image/route/${ (hour<18 && hour >4)?"d":"n"}${record.weather}.png`;
+                                        // m.callout.content = `${m.district == m.city?m.city:m.city+"-"+m.district}(${weatherCodes.weather[record.weather]})` 
+                                        // m.callout.content += `${weatherCodes.weather[record.weather]}` 
+                                        m.callout = {};
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if(!found){
+                                console.error(`marker :${m.id},${m.adcode}  arriveAt = ${arriveAt} ,no suit weather`)
+                            }
+                        }
+                    })
+                    
+
+
+                }else{
+                    console.error(`marker not exist for adcode:${parsed.adcode}`)
+                }
+
+            }else{
+                console.error(`No:${idx} response has error:`,resp);
+            }
+        });
+
+        let notGood = 0;
+        let alarmCount = 0;
+        markers.forEach((marker,index)=>{
+            let weatherWhenArrive = marker.weatherWhenArrive;
+            if(weatherWhenArrive){
+                // if(weatherWhenArrive.weather > "01" || weatherWhenArrive.windPower > "5"){
+                if(isNotGood(weatherWhenArrive.weather,weatherWhenArrive.windPower)){
+                    console.log(`marker:${marker.id} has bad weather!`)
+                    marker.notGoodWhenArrive = true; //标记不利天气
+                    // marker.callout.borderColor="#ff2e2a";
+                    marker.callout.bgColor=  '#ff2e2a',
+                    // marker.callout.borderWidth=4;
+                    notGood++;
+                }
+            }else{
+                console.error(`marker :${marker.id},${marker.adcode} no suit weather`)
+            }
+
+            if(marker.alarm && marker.alarm.length>0){
+                console.log(`marker:${marker.id} has alarm!`);
+                this.customData.animationQueue.push(marker)
+                alarmCount++;
+            }
+        });
+
+
+        routeMetaData.notGood = notGood;
+        routeMetaData.alarmCount = alarmCount;
+
+        let weatherDesc = "";
+        if(routeMetaData.alarmCount >0){
+            weatherDesc = "有预警天气"
+        }else if(routeMetaData.notGood >0){
+            weatherDesc = "有不利天气"
+        }else{
+            weatherDesc = "天气不错"
+        }
+
+        routeMetaData.weatherDesc = weatherDesc;
+
+        return routeMetaData;
+    },
+
+    genRouteData: function(routeData,gutterDistance){
+        const { distance, duration, steps,origin, destination, routes } = routeData;
+
+        console.log(`获取到路程时长:${duration}秒`)
+        console.log(`获取到路程:${distance}米`)
+
+        let newPath = []; //存放所有要绘制的图形信息
+        let markers =[]; // 存放所有的路过标记物
+        let passedAdcodes ={}; //保存经过的城市编码:城市名称
+        let cityMakers ={};//name:true 记录哪些城市已经标记过了
+
+        let totalDistance = distance;
+        let totalDuration = duration;
+        let distancePassed = 0;
+        let distanceLeft = 0; //保存当前未参与checkPoint的里程数
+        const gutter = gutterDistance || 50; //默认50公里做一个城市check点
+
+        let beginCity =""; //保存起始城市
+
+        console.log(`step.length:${steps.length}`);
+        steps && steps.forEach((step, index) => {
+           let {path,start_location,distance} = step;
+
+           let points = path.split(";");
+                //累加总行程
+                distancePassed += avgPointGutter;
+                let arriveTime = new Date( (+this.data.startTime) + Math.floor(totalDuration * (distancePassed/totalDistance) * 1000 ) );
+
+                if( markers.length===0 || (distanceLeft >= gutter * 1000) || (index === steps.length-1 && idx === points.length-1) ){
+                    // 开始新增marker
+                    // 将路径起始点加入marker
+                    let coord = p.split(',');
+                    let p_latitude = coord[1];
+                    let p_longitude = coord[0];
+                    let theMarker =  {
+                        id: this.data.markerIdSeed++,
+                        latitude: p_latitude,
+                        longitude:p_longitude,
+                        distancePassed,//从起点到这个marker经过的距离(米)
+                        arriveTime,
+                        // alpha:0,
+                        anchor:{
+                            x:0.5,
+                            y:1,
+                        },
+                        // iconPath: '../../resource/image/marker.png',
+                        callout: {
+                            display: 'ALWAYS',
+                            content: "",
+                            // content: `marker:${markers.length}`,
+                            color: '#fff',
+                            fontSize: '14',
+                            borderRadius: 2,
+                            bgColor: '#5B9FFF',
+                            // padding: 1,
+                            textAlign: 'center'
+                        },
+                        // customCallout: {
+                        //     anchorY: 0,
+                        //     anchorX: 0,
+                        //     display: 'ALWAYS'
+                        //   },
+                    distanceLeft -= gutter * 1000; 
+                }
+            
+           });
+           
+           
+
+          
+            //如果该城市之前没有标识过，就标识一下
+            // if(!cityMakers[beginCity]){
+            //     markers.push(startMarker);
+            //     cityMakers[beginCity] = true;
+            // }
+
+
+           //处理path
+           let segmentPath = {
+               points:[],
+               width:3,
+               arrowLine:true,
+               color:"#2facff",
+           };
+           path.split(";").forEach(points =>{
+                points = points.split(",");
+                segmentPath.points.push({
+                    latitude: points[1], 
+                    longitude: points[0]
+                });
+           });
+
+           newPath.push(segmentPath);
+            
+        });
+
+
+
+
+        markers[0].callout.content+='(起点)';
+        // markers[0].callout.color='#F00';
+        markers[0].callout.fontSize= '16';
+        markers[0].callout.borderRadius= 10;
+        // markers[0].callout.bgColor= '#0F0';
+        markers[0].callout.padding= 2;
+        markers[0].callout.zIndex= 9999;
+
+        //最后一个终止点，样式修改
+        markers[markers.length-1].callout.content+='(终点)';
+        // markers[markers.length-1].callout.color='#F00';
+        markers[markers.length-1].callout.fontSize= '16';
+        markers[markers.length-1].callout.borderRadius= 10;
+        // markers[markers.length-1].callout.bgColor= '#0F0';
+        markers[markers.length-1].callout.padding= 2;
+        markers[markers.length-1].callout.zIndex= 9999;
+
+        //根据开始结束点，重设地图的中心点和缩放
+        let mapCenter = {
+            latitude: (parseFloat(markers[0].latitude) + parseFloat(markers[markers.length-1].latitude))/2,
+            longitude: (parseFloat(markers[0].longitude) + parseFloat(markers[markers.length-1].longitude))/2,
+          };
+
+
+        //   let mapCenter = {
+        //     latitude: markers[0].latitude,
+        //     longitude: markers[0].longitude
+        //   };
+
+        let scale = 6;//TODO:动态计算
+        let endTime = new Date(+this.data.startTime + (duration*1000));
+        
+        let routeMetaData = {
+            routeName:"",
+            startTime:this.data.startTime,
+            weatherDesc:"天气不错/有预警天气/有不利天气",
+            distance,//距离（米）
+            distanceDesc:this.parseDistance(distance),
+            duration,//时长（秒）
+            durationDesc:this.parseDuration(duration),
+            endTime,
+            endTimeDesc:this.parseTime(endTime),
+            scale,
+            markers,
+            mapCenter,
+            polyline:newPath
+        }
+        console.log(`get route:`);
+        console.log(routeMetaData);
+        return routeMetaData;
+    },
+
+    async getAdressLocation(address){
+        try{
+            let resp = await callBaiduMapAPI(apis.GEO_CODING,{
+                address
+            })
+            // console.log(resp);
+            let data = resp.data;
+            if (data["status"] === 0) {
+                const res = data.result.location;
+                return {
+                    lat:res.lat,
+                    lnt:res.lng,
+                }
+            }else{
+                return {};
+            }
+          }catch(e){
+            return {};
+          }
+    },
+
+    async queryRoute(type){
+        try{
+            let resp = await callBaiduMapAPI(apis.DRIVING_ROUTE,{
+                tactics:type,
+                origin:`${this.data.fromLat},${this.data.fromLnt}`, //出发坐标 lat,lng
+                destination:`${this.data.toLat},${this.data.toLnt}` //到达坐标 lat,lng
+            })
+            
+            //console.log('百度地图返回结果：');
+            //console.log(resp);
+            let data = resp.data;
+            if (data["status"] === 0) {
+                const res = data["result"];
+                return res.routes[0];
+            }else{
+                return undefined;
+            }
+          }catch(e){
+            return undefined;
+          }
+    },
+
+    async initAllRoutes(){
+        try{
+            // let res1 = await this.queryRoute("4");
+            // let res2 = await this.queryRoute("6");
+            // let res3 = await this.queryRoute("7");
+
+            let queryRouteResArray = await Promise.all([this.queryRoute("4"),this.queryRoute("5"),this.queryRoute("6")]);
+            // let [res1,res2,res3] = await Promise.all([this.queryRoute("4"),this.queryRoute("5"),this.queryRoute("6")]);
+
+            let routeMetaDataResArray =[];
+            queryRouteResArray.forEach(res =>{
+                if(res){
+                    routeMetaDataResArray.push(this.fullfillRouteInfo(this.genRouteData(res,kmForGutter)))
+                }
+            })
+
+
+            let fullfillRouteResArray = await Promise.all(routeMetaDataResArray);
+            // let [r1,r2,r3] = await Promise.all([this.fullfillRouteInfo(rd1),this.fullfillRouteInfo(rd2),this.fullfillRouteInfo(rd3)]);
+
+            // 把路径按照时间快慢排序
+            fullfillRouteResArray.sort((a,b)=>{
+                return a.duration - b.duration
+            })
+
+            fullfillRouteResArray.forEach((a,idx)=>{a.currentSelect = idx});
+
+            fullfillRouteResArray[0] && (fullfillRouteResArray[0].routeName = "时间少")
+            fullfillRouteResArray[1] && (fullfillRouteResArray[1].routeName = "收费多")
+            fullfillRouteResArray[2] && (fullfillRouteResArray[2].routeName = "收费少 时间多")
+
+            console.log('获取天气信息：')
+            //因为天气数据有本地接口缓存，所以不同路线分开调用并行请求更能利用缓存
+
+            for(let i=0;i<fullfillRouteResArray.length;i++){
+                let d = await this.fullfillRouteWeatherInfo(fullfillRouteResArray[i]);
+                this.data.allRoutes.push(d);
+            }
+            console.log(this.data.allRoutes);
+
+            // 把路径按照时间快慢排序
+            // let ar = [r1,r2,r3];
+            // ar.sort((a,b)=>{
+            //     return a.duration - b.duration
+            // })
+
+            // ar.forEach((a,idx)=>{a.currentSelect = idx})
+
+            // ar[0].routeName = "时间少";
+            // ar[1].routeName = "收费多";
+            // ar[2].routeName = "收费少 时间多";
+
+            // console.log('获取天气信息：')
+
+            // //因为天气数据有本地接口缓存，所以不同路线分开调用并行请求更能利用缓存
+            // ar[0] = await this.fullfillRouteWeatherInfo(ar[0]);
+            // ar[1] = await this.fullfillRouteWeatherInfo(ar[1]);
+            // ar[2] = await this.fullfillRouteWeatherInfo(ar[2]);
+            // console.log(ar[0]);
+            // console.log(ar[1]);
+            // console.log(ar[2]);
+
+            // this.data.allRoutes.push(ar[0]);
+            // this.data.allRoutes.push(ar[1]);
+            // this.data.allRoutes.push(ar[2]);
+
+            this.setData({
+                allRoutes:this.data.allRoutes
+            })
+
+            this.showRoute(0); //默认展示第一条路线
+        }catch(e){
+            // this.setData('currentLocation', '定位失败')
+            // wx.showToast({ title: '获取失败' })
+            wx.showToast({ title: '路径规划失败' })
+            console.error(e);
+        }
+    },
+    async initAllWeather(){
+
+    },
+  onLoad: async function (params) {
+      console.log('detail two onLoad:');
+      console.log(params);
+      this.customData = {
+          animationQueue:[]
+      };
+
+      // 监听页面加载的生命周期函数
+      try{
+        wx.showLoading({
+            title: '路线规划中...',
+        });
+
+        //先看传入参数是否有坐标信息（来自定位），如果没有，则根据地址查询坐标
+        if(!params.fromLat){
+            let fromPos = await this.getAdressLocation(params.from);
+            params.fromLat = fromPos.lat;
+            params.fromLnt = fromPos.lnt;
+        }
+        if(!params.toLat){
+            let toPos = await this.getAdressLocation(params.to);
+            params.toLat = toPos.lat;
+            params.toLnt = toPos.lnt;
+        }
+        // let startTime = new Date(`${params.date} ${params.time}`);
+        let startTime = moment(`${params.date} ${params.time}`,"YYYY-MM-DD HH:mm").toDate();
+
+        this.setData({
+            from:params.from,
+            fromCode:params.fromCode,
+            fromLat:params.fromLat,
+            fromLnt:params.fromLnt,
+            to:params.to,
+            toCode:params.toCode,
+            toLat:params.toLat,
+            toLnt:params.toLnt,
+
+            startTime:startTime,
+            startTimeDesc:this.parseTime(startTime),
+        });
+
+        //初始化路线信息
+        await this.initAllRoutes();
+        await this.initAllWeather();
+      }catch(e){
+        wx.showToast({ title: '路径规划失败' })
+        console.error(e);
+      }finally{
+        wx.hideLoading();
+      }
+
+  },
+  makeMarkerMove(marker,direction){
+    let destLat = direction? parseFloat(marker.latitude)+0.01 : parseFloat(marker.latitude)-0.01;
+    console.log(`destLat = ${destLat}`);
+    let self = this;
+    this.mapCtx.translateMarker({
+        markerId: marker.id,
+        duration: 1800,
+        destination: {
+          latitude: destLat,
+          longitude: parseFloat(marker.longitude)
+        },
+        animationEnd() {
+        //   console.log('animation end');
+          self.makeMarkerMove(marker,!direction);
+        },
+        complete(res) {
+            console.log(`makeMarkerMove`)
+            console.log(res)
+        }
+      })
+    console.log('onReady')
+    this.mapCtx = wx.createMapContext('myMap');
+  },
+
+  createTopDownAnimation(selector,duration,cb){
+      this.animate(selector, [
+        {top:'-120px',ease:'ease-in-out'},
+        {top:0,ease:'ease-in-out'}
+      ], duration, function(){
+        // this.clearAnimation(selector, function () {
+            // console.log(`清除了${selector}上的所有动画属性`);
+            cb && cb();
+        // })
+      }.bind(this));
+    // let ani = wx.createAnimation({
+    //     duration:1200,
+    //     timingFunction:'ease-in-out',
+    //     delay:0,
+    // });
+    // ani.top = 0;
+  },
+  createDownTopAnimation(selector,duration,cb){
+      this.animate(selector, [
+          {top:0,ease:'ease-in-out'},
+          {top:'-120px',ease:'ease-in-out'},
+      ], duration, function(){
+        // this.clearAnimation(selector, function () {
+            // console.log(`清除了${selector}上的所有动画属性`);
+            cb && cb();
+        // })
+      }.bind(this));
+  },
+
+  onTapMap(args){
+    console.log('onTapMap');
+    console.log(args);
+    if(!this.data.routeMode){
+        this.setData({
+            routeMode:true,
+            scale:6,
+        });
+    }
+  },
+
+  onReturn(args){
+    if(!this.data.routeMode){
+      this.setData({
+        routeMode:true,
+        scale:6,
+    });
+    }
+  },
+  onShareRouteClick(){
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
+  },
+  onShareAppMessage(args){
+    console.log(args);
+    if(args.target.dataset.from === "route"){
+      return {
+        title:`从[${this.data.from}]到[${this.data.to}]` 
+        // title:`[${moment(this.data.startTime).format("MM月DD日 HH时")}]从[${this.data.from}]到[${this.data.to}]` 
+      }
+    }else{
+      return {
+        title:`[${this.data.currentCity}]有[${this.data.currentChosenAlarm.alarmTypeName + this.data.currentChosenAlarm.alarmLevelName + '预警'}]` 
+      }
+    }
+  },
+  onWarnClick(args){
+    console.log('onWarnClick');
+    console.log(args);
+    let warnData = this.data.currentAlarms[args.currentTarget.dataset.alarmIdx].raw;
+    console.log(warnData);
+    this.setData({
+      viewWarn : true,
+      currentChosenAlarm:warnData
+    });
+  },
+  closeWarn(){
+    this.setData({
+      viewWarn : false
+    })
+  },
+  handleMarkerTap(args){
+
+
+    let markerId = args.detail.markerId;
+    // 从全局数据区获取当前选定的路线详细数据
+    const appInstance = getApp();
+    let currentRouteData = appInstance.globalData.currentRouteData;
+
+    // 获取当前显示的marker
+    // let markerId = parseInt(params.markerId);
+    let marker = this.grabMarkerData(markerId,currentRouteData);
+
+    if(this.data.routeMode){
+        this.setData({
+            routeMode:false,
+            scale:8,
+            mapCenter:{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+            },
+        });
+    }else{
+        this.setData({
+            mapCenter:{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+            },
+        })
+    }
+    // let markerId = args.detail.markerId;
+    // wx.navigateTo({
+    //     url: `../detail-one/detail-one?markerId=${markerId}`,
+    // });
+  },
+  onMarkertap(args){
+    console.log(args);
+    this.handleMarkerTap(args);
+  },  
+  onCallouttap(args){
+      console.log(args);
+      this.handleMarkerTap(args);
+    //   let markerId = args.detail.markerId;
+    //   wx.navigateTo({
+    //       url: `../detail-one/detail-one?markerId=${markerId}`,
+    //   });
+  },
+  navigateToDetailOne() {
+      wx.navigateTo({
+          url: '../detail-one/detail-one',
+      })
+  },
+
+  // 根据markerId找到对应的城市信息，进行相关计算，并设置data进行展示
+  grabMarkerData(markerId,currentRouteData){
+    let markers = currentRouteData.markers.filter(m => m.id == markerId);
+
+    if(markers && markers.length >0){
+      let marker = markers[0]; 
+
+      console.log(marker);
+
+      // 根据1小时天气数据，计算“当天”的天气情况
+      // 温度范围按照小时预报落在当前范围内的上下限取值
+      // 天气情况，统计当天出现最多的天气编码，进行翻译获取
+      let oneHourData = marker.weather["1h"];
+      let minTemp = 999;
+      let maxTemp = -99;
+      let weatherCount = {};
+      let weatherCode = undefined;
+      let arriveTimeTemp = undefined; //到达时的天气情况，先尝试从1小时信息获取
+
+      let arriveTimeString = moment(marker.arriveTime).format("YYYYMMDDHHmmss");
+      let now = moment();
+      for(let i=0;i<oneHourData.length;i++){
+          let hourData = oneHourData[i];
+          let {temp,time,weather} = hourData;
+
+          // 计算到达时天气
+          let timeEnd = moment(time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+          if(arriveTimeString >= time && arriveTimeString <= timeEnd){
+            console.log(`找到时间段，设定marker:${marker.city}的温度=${temp}`)
+            arriveTimeTemp = temp;
+          }
+
+          // 如果超过当天则不计算温度
+          time = moment(time,"YYYYMMDDHHmmss");
+          if(time.dayOfYear() > now.dayOfYear()){
+            console.log(`time.dayOfYear() = ${time.dayOfYear()},not count temp!`);
+          }else{
+
+            temp = parseInt(temp);
+  
+            if(temp < minTemp)
+              minTemp = temp;
+  
+            if(temp > maxTemp)
+              maxTemp = temp;
+  
+            if(weatherCount.hasOwnProperty(weather)){
+              weatherCount[weather] ++;
+            }else{
+              weatherCount[weather] = 1;
+            }
+
+          }
+      }
+
+      let max = 0;
+      for(let k in weatherCount){
+        if(weatherCount[k] > max){
+          weatherCode = k;
+          max = weatherCount[k];
+        }
+      }
+
+      console.log(`weatherCode = ${weatherCode}`)
+      weatherCode = weatherCodes.weather[weatherCode];
+      console.log(`weatherCodeDesc = ${weatherCode}`)
+
+      // 到达时间设置
+      let arriveTime = marker.arriveTime;
+      let startTime = currentRouteData.startTime;
+      // let startTimeDesc = moment(startTime).calendar();
+      let startTimeDesc = this.parseTime(startTime);
+      // let arriveTimeDesc = moment(arriveTime).calendar();
+      let arriveTimeDesc = this.parseTime(arriveTime);
+
+      // 到达时天气设置
+      let weatherWhenArrive = marker.weatherWhenArrive;
+      let arriveTimeMinTemp = weatherWhenArrive.minTemp;
+      let arriveTimeMaxTemp = weatherWhenArrive.maxTemp;
+
+      //如果1小时天气信息不包含到达时刻的天气，则取12小时预告的上下限均值
+      if(arriveTimeTemp === undefined){
+        arriveTimeTemp = Math.floor( (arriveTimeMinTemp = arriveTimeMaxTemp)/2)
+      }
+
+      let arriveTimeWeatherCode = weatherWhenArrive.weather;
+
+      let notGoodLastTime = 0;
+
+      let hour = arriveTime.getHours();
+      let arriveTimeDayOrNight = (hour<18 && hour >4)?"d":"n";
+      // 计算不利天气持续时间（仅当到达时天气不好才计算）
+      if(marker.notGoodWhenArrive){
+        // console.log('计算不利天气持续时间（仅当到达时天气不好才计算）')
+        let lastStart = moment(arriveTime).format("YYYYMMDDHHmmss");
+        let startCount = false;
+        for(let i=0;i<oneHourData.length;i++){
+          let record = oneHourData[i];
+          record.timeEnd = moment(record.time,"YYYYMMDDHHmmss").add(1, 'h').format("YYYYMMDDHHmmss");
+          // console.log(`3 record.timeEnd = ${record.timeEnd}`)
+          // console.log(`startCount = ${startCount}`)
+
+          if(!startCount){
+
+          // console.log(`record.time = ${record.time}`)
+          // console.log(`record.timeEnd = ${record.timeEnd}`)
+          // console.log(`lastStart = ${lastStart}`)
+            // TODO:如果还没开始累计持续时间，就判断是否开始计时
+            if(record.time <= lastStart && lastStart <= record.timeEnd){
+              startCount = true;
+              // console.log(`startCount = ${startCount}`)
+            }
+          }else {
+            // 目前处于计时状态，则寻找下一个天气转折点
+            if(!isNotGood(record.weather,record.windPower)){
+              break
+            }else{
+              notGoodLastTime++;
+              // console.log(`notGoodLastTime = ${notGoodLastTime}`)
+            }
+
+          }
+        } 
+      }
+
+      // TODO:处理当前城市预警信息
+      // currentAlarms:[
+      //   {title:"邯郸市发布结冰橙色预警"},
+      //   {title:"邯郸市发布结冰橙色预警"},
+      // ],
+      let alarms = [];
+
+      alarms = marker.alarm.map(a=>{
+        let desc = `${a.alarmTypeName}${a.alarmLevelName}`;
+        
+        return {
+          title:`${marker.city}市发布${desc}预警`,
+          alarmColor:`alarm-${a.alarmLevel}`,
+          raw:a
+        }
+      })
+      
+      this.setData({
+        currentProvince:marker.province,
+        currentCity:marker.city == marker.currentDistrict?"":marker.city , //如果只精确到了市区，那么市区不显示，县区的位置显示市信息
+        currentDistrict:marker.district,
+    
+        currentAlarms:alarms,
+    
+        startTimeDesc,
+        arriveTimeDesc

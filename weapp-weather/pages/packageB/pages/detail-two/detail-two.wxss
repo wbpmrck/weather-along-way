@@ -138,7 +138,7 @@
   padding: 16rpx;
   font-size: 32rpx;
   border-radius: 16rpx;
-  color: #efefef;
+  color: #c7bcbc;
 }
 
 .stat-item .title {
